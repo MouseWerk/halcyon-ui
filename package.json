@@ -1,0 +1,27 @@
+{
+  "name": "halcyon-ui",
+  "version": "0.1.0",
+  "description": "Tactile, glowing React components you copy into your project. Dot-matrix icons, soft surfaces, springy motion.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "halcyon": "cli/index.mjs"
+  },
+  "files": [
+    "cli",
+    "registry"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": ["react", "tailwind", "components", "ui", "shadcn", "neumorphism", "dot-matrix"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mauricekleindienst/halcyon-ui.git"
+  },
+  "scripts": {
+    "dev": "npm --prefix www run dev",
+    "build": "npm --prefix www run build",
+    "typecheck": "npm --prefix www run typecheck"
+  }
+}

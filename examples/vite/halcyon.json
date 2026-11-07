@@ -1,0 +1,6 @@
+{
+  "css": "src/styles/halcyon.css",
+  "ui": "src/components/ui",
+  "lib": "src/lib",
+  "hooks": "src/hooks"
+}

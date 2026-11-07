@@ -1,0 +1,291 @@
+{
+  "name": "halcyon-ui",
+  "base": {
+    "description": "Design tokens, cn() helper and theme hook. Installed by `init`.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "files": [
+      {
+        "path": "styles/halcyon.css",
+        "target": "css"
+      },
+      {
+        "path": "lib/utils.ts",
+        "target": "lib"
+      },
+      {
+        "path": "hooks/use-theme.ts",
+        "target": "hooks"
+      }
+    ]
+  },
+  "items": {
+    "button": {
+      "description": "Raised key that sinks when pressed. Variants: default, glow, ghost, inset, danger.",
+      "files": [
+        "ui/button.tsx"
+      ]
+    },
+    "card": {
+      "description": "Raised or inset surface with a staggered entrance.",
+      "files": [
+        "ui/card.tsx"
+      ]
+    },
+    "switch": {
+      "description": "Tactile switch that lights up when on: glowing rim, halo and LED.",
+      "files": [
+        "ui/switch.tsx"
+      ]
+    },
+    "dot-icon": {
+      "description": "Dot-matrix canvas icon that morphs between glyphs through particles.",
+      "files": [
+        "ui/dot-icon.tsx",
+        "lib/dot-matrix.ts"
+      ]
+    },
+    "theme-switch": {
+      "description": "The signature light/dark switch with sun-to-moon particle morph and circular reveal. Also exports <ThemeScript /> for flash-free SSR.",
+      "files": [
+        "ui/theme-switch.tsx"
+      ],
+      "registryDependencies": [
+        "dot-icon"
+      ]
+    },
+    "input": {
+      "description": "Recessed text field with icon and trailing slots.",
+      "files": [
+        "ui/input.tsx"
+      ]
+    },
+    "kbd": {
+      "description": "Tiny raised keycap.",
+      "files": [
+        "ui/kbd.tsx"
+      ]
+    },
+    "status-lamp": {
+      "description": "Glowing LED whose breathing speeds up with severity.",
+      "files": [
+        "ui/status-lamp.tsx"
+      ]
+    },
+    "badge": {
+      "description": "Status pill with a glowing dot.",
+      "files": [
+        "ui/badge.tsx"
+      ]
+    },
+    "segmented": {
+      "description": "Segmented control with a spring-loaded thumb.",
+      "files": [
+        "ui/segmented.tsx"
+      ]
+    },
+    "sparkline": {
+      "description": "Self-drawing sparkline in the theme glow.",
+      "files": [
+        "ui/sparkline.tsx"
+      ]
+    },
+    "counter": {
+      "description": "Dot-matrix number that counts up.",
+      "files": [
+        "ui/counter.tsx"
+      ]
+    },
+    "stat": {
+      "description": "KPI tile with counter, delta chip and sparkline.",
+      "files": [
+        "ui/stat.tsx"
+      ],
+      "registryDependencies": [
+        "card",
+        "counter",
+        "sparkline"
+      ]
+    },
+    "dot-chart": {
+      "description": "Dot-matrix bar chart with staggered pop-in.",
+      "files": [
+        "ui/dot-chart.tsx"
+      ]
+    },
+    "table": {
+      "description": "Table whose rows are recessed strips that slide on hover.",
+      "files": [
+        "ui/table.tsx"
+      ]
+    },
+    "toast": {
+      "description": "toast() function and <Toaster /> that springs up from the bottom.",
+      "files": [
+        "ui/toast.tsx"
+      ],
+      "registryDependencies": [
+        "status-lamp"
+      ]
+    },
+    "nav": {
+      "description": "Recessed sidebar rail with rising active item and LED.",
+      "files": [
+        "ui/nav.tsx"
+      ]
+    },
+    "avatar": {
+      "description": "Raised round avatar with initials or image.",
+      "files": [
+        "ui/avatar.tsx"
+      ]
+    },
+    "meter": {
+      "description": "Dot-segment progress meter.",
+      "files": [
+        "ui/meter.tsx"
+      ]
+    },
+    "scroll-area": {
+      "description": "Scroll container with edge fades and the tactile scrollbar.",
+      "files": [
+        "ui/scroll-area.tsx"
+      ]
+    },
+    "label": {
+      "description": "Form label with optional hint.",
+      "files": [
+        "ui/label.tsx"
+      ]
+    },
+    "textarea": {
+      "description": "Recessed multi-line field with auto-grow and character counter.",
+      "files": [
+        "ui/textarea.tsx"
+      ]
+    },
+    "checkbox": {
+      "description": "Recessed box with a glowing key that pops in; supports indeterminate.",
+      "files": [
+        "ui/checkbox.tsx"
+      ]
+    },
+    "radio-group": {
+      "description": "Radio wells with a springing glow bead and arrow-key navigation.",
+      "files": [
+        "ui/radio-group.tsx"
+      ]
+    },
+    "slider": {
+      "description": "Dot-track slider with a glowing knob and value bubble.",
+      "files": [
+        "ui/slider.tsx"
+      ]
+    },
+    "tabs": {
+      "description": "Tabs in a recessed rail with a springing thumb.",
+      "files": [
+        "ui/tabs.tsx"
+      ]
+    },
+    "accordion": {
+      "description": "Plates that sink into the page when opened.",
+      "files": [
+        "ui/accordion.tsx"
+      ]
+    },
+    "select": {
+      "description": "Raised trigger with a floating listbox, typeahead and keyboard support.",
+      "files": [
+        "ui/select.tsx",
+        "lib/overlay.tsx"
+      ]
+    },
+    "dialog": {
+      "description": "Modal that rises out of a blurred page; focus trapped.",
+      "files": [
+        "ui/dialog.tsx",
+        "lib/overlay.tsx"
+      ]
+    },
+    "sheet": {
+      "description": "Floating side panel that springs in from an edge.",
+      "files": [
+        "ui/sheet.tsx",
+        "lib/overlay.tsx"
+      ]
+    },
+    "popover": {
+      "description": "Floating panel anchored to a trigger.",
+      "files": [
+        "ui/popover.tsx",
+        "lib/overlay.tsx"
+      ]
+    },
+    "tooltip": {
+      "description": "Raised label on hover and focus.",
+      "files": [
+        "ui/tooltip.tsx",
+        "lib/overlay.tsx"
+      ]
+    },
+    "dropdown-menu": {
+      "description": "Menu with items, labels, separators and checkbox items.",
+      "files": [
+        "ui/dropdown-menu.tsx",
+        "lib/overlay.tsx"
+      ]
+    },
+    "command": {
+      "description": "Ctrl/Cmd+K command palette with fuzzy search.",
+      "files": [
+        "ui/command.tsx",
+        "lib/overlay.tsx"
+      ]
+    },
+    "alert": {
+      "description": "Recessed message well with a status LED.",
+      "files": [
+        "ui/alert.tsx"
+      ]
+    },
+    "skeleton": {
+      "description": "Dot-matrix shimmer placeholder.",
+      "files": [
+        "ui/skeleton.tsx"
+      ]
+    },
+    "spinner": {
+      "description": "Ring of dots with a glowing comet.",
+      "files": [
+        "ui/spinner.tsx"
+      ]
+    },
+    "separator": {
+      "description": "Engraved groove or dotted rule.",
+      "files": [
+        "ui/separator.tsx"
+      ]
+    },
+    "breadcrumb": {
+      "description": "Monospace path with a raised current-page chip.",
+      "files": [
+        "ui/breadcrumb.tsx"
+      ]
+    },
+    "pagination": {
+      "description": "Page keys in a recessed rail.",
+      "files": [
+        "ui/pagination.tsx"
+      ]
+    },
+    "error-boundary": {
+      "description": "Safety net: a failing part shows a retry panel instead of breaking the page.",
+      "files": [
+        "ui/error-boundary.tsx"
+      ]
+    }
+  }
+}

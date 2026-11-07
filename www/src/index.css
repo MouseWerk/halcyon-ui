@@ -1,0 +1,31 @@
+@import "tailwindcss";
+@import "../../registry/styles/halcyon.css";
+
+@source "../../registry";
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { -webkit-font-smoothing: antialiased; }
+  ::selection { background: var(--hc-glow-soft); }
+}
+
+/* Site-only helpers */
+.dot-field {
+  background-image: radial-gradient(var(--hc-dot-off) 1.2px, transparent 1.4px);
+  background-size: 18px 18px;
+}
+.text-glow-shadow { text-shadow: 0 0 24px var(--hc-glow-soft); }
+
+.code-block .tk-k { color: var(--hc-glow-ink); }
+.code-block .tk-s { color: var(--hc-ok); }
+.code-block .tk-c { color: var(--hc-muted); font-style: italic; }
+.code-block .tk-t { color: var(--hc-ink); font-weight: 600; }
+.code-block .tk-n { color: var(--hc-warn); }
+
+@keyframes marquee { to { transform: translateX(-50%); } }
+.animate-marquee { animation: marquee 40s linear infinite; }
+
+@keyframes float-a { 50% { transform: translateY(-8px) rotate(-1deg); } }
+@keyframes float-b { 50% { transform: translateY(6px) rotate(1deg); } }
+.float-a { animation: float-a 6s ease-in-out infinite; }
+.float-b { animation: float-b 7s ease-in-out infinite; }
