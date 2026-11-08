@@ -22,7 +22,7 @@ export function Badge({ tone = "neutral", dot = true, surface = "raised", classN
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full py-[3px] pl-2 pr-2.5 text-xs",
+        "inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full py-[3px] pl-2 pr-2.5 text-xs",
         surface === "raised"
           ? "bg-surface shadow-[1px_1px_3px_var(--hc-sh-dark),-1px_-1px_3px_var(--hc-sh-light)]"
           : "bg-bg shadow-inset-sm",

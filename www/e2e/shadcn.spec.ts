@@ -206,7 +206,8 @@ test("resizable handles move with the keyboard", async ({ page }) => {
 
 test("sidebar collapses to icons on desktop and opens off-canvas on phones", async ({ page }, info) => {
   const d = await openComponent(page, "sidebar")
-  const phone = (page.viewportSize()?.width ?? 1280) < 768
+  // Below 1024px the sidebar is an off-canvas panel (tablets included)
+  const phone = (page.viewportSize()?.width ?? 1280) < 1024
   if (phone) {
     await d.getByRole("button", { name: "Expand sidebar" }).click()
     const panel = page.getByRole("dialog", { name: "Sidebar" })
@@ -220,7 +221,11 @@ test("sidebar collapses to icons on desktop and opens off-canvas on phones", asy
     await expect(orders).toHaveAttribute("aria-current", "page")
     await d.getByRole("button", { name: "Collapse sidebar" }).click()
     await expect(d.locator("aside")).toHaveCSS("width", "76px", { timeout: 3000 })
-    await expect(d.getByRole("button", { name: /Orders/ })).toHaveAttribute("title", "Orders")
+    // Collapsed rows keep their name for screen readers and show it in a floating tooltip
+    const collapsedOrders = d.getByRole("button", { name: "Orders" })
+    await expect(collapsedOrders).toHaveAttribute("aria-label", "Orders")
+    await collapsedOrders.hover()
+    await expect(page.getByRole("tooltip")).toContainText("Orders")
     if (!info.project.name.includes("tablet")) {
       await page.keyboard.press("ControlOrMeta+b")
       await expect(d.locator("aside")).toHaveCSS("width", "256px", { timeout: 3000 })

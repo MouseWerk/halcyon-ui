@@ -21,7 +21,8 @@ export function useSidebar() {
   return c
 }
 
-const MOBILE = "(max-width: 767px)"
+// Below 1024px the rail would take too much room; the sidebar becomes a slide-in panel
+const MOBILE = "(max-width: 1023px)"
 const subscribeMq = (cb: () => void) => { const m = matchMedia(MOBILE); m.addEventListener("change", cb); return () => m.removeEventListener("change", cb) }
 
 export interface SidebarProviderProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -82,8 +83,31 @@ export function Sidebar({ side = "left", className, children, ...props }: Sideba
   useFocusTrap(isMobile && openMobile, panel)
   useDismiss(isMobile && openMobile, () => setOpenMobile(false), [panel])
 
+  // While the rail changes width the content is faded out, so the half-way
+  // layout (narrow content in a wide rail, or the reverse) is never seen.
+  const [shownOpen, setShownOpen] = React.useState(open)
+  const [switching, setSwitching] = React.useState(false)
+  if (shownOpen !== open) {
+    setShownOpen(open)
+    setSwitching(true)
+  }
+  React.useEffect(() => {
+    if (!switching) return
+    // Fallback for when no transitionend fires (reduced motion, hidden tab)
+    const t = setTimeout(() => setSwitching(false), 650)
+    return () => clearTimeout(t)
+  }, [switching])
+
   const inner = (collapsed: boolean) => (
-    <div data-state={collapsed ? "collapsed" : "expanded"} className="group/sidebar flex h-full min-h-0 flex-col gap-3 p-2.5">{children}</div>
+    <div
+      data-state={collapsed ? "collapsed" : "expanded"}
+      className={cn(
+        "group/sidebar flex h-full min-h-0 flex-col gap-3 p-2.5 transition-opacity",
+        switching ? "opacity-0 duration-100" : "opacity-100 duration-200",
+      )}
+    >
+      {children}
+    </div>
   )
 
   if (isMobile) {
@@ -121,9 +145,10 @@ export function Sidebar({ side = "left", className, children, ...props }: Sideba
         side === "right" && "order-last",
         className,
       )}
+      onTransitionEnd={(e) => { if (e.target === e.currentTarget && e.propertyName === "width") setSwitching(false) }}
       {...props}
     >
-      <div className="h-full rounded-[22px] bg-surface shadow-raised">{inner(!open)}</div>
+      <div className="h-full overflow-hidden rounded-[22px] bg-surface shadow-raised">{inner(!open)}</div>
     </aside>
   )
 }
@@ -133,7 +158,8 @@ export function SidebarHeader({ className, ...props }: React.HTMLAttributes<HTML
 }
 
 export function SidebarContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("-mx-1 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overflow-x-hidden px-1 scrollbar-none", className)} {...props} />
+  // Scrolls when the window is short; a slim scrollbar shows that more follows
+  return <div className={cn("-mx-1 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overflow-x-hidden px-1 [&::-webkit-scrollbar-thumb]:border-[1.5px] [&::-webkit-scrollbar]:w-[7px]", className)} {...props} />
 }
 
 export function SidebarFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
@@ -198,14 +224,36 @@ export function SidebarMenuButton({ icon, active, badge, tooltip, href, linkAs: 
       )}
     </>
   )
+  // Collapsed rows show their name in a tooltip next to the rail. It is drawn in
+  // a portal because the rail clips everything that sticks out.
+  const [tip, setTip] = React.useState<DOMRect | null>(null)
+  const label = tooltip ?? (typeof children === "string" ? children : undefined)
+  const showTip = (e: React.SyntheticEvent<HTMLElement>) => { if (collapsed && label) setTip(e.currentTarget.getBoundingClientRect()) }
+  const hideTip = () => setTip(null)
   const common = {
     "aria-current": active ? ("page" as const) : undefined,
-    title: collapsed ? tooltip : undefined,
+    "aria-label": collapsed ? label : undefined,
+    onMouseEnter: showTip,
+    onMouseLeave: hideTip,
+    onFocus: showTip,
+    onBlur: hideTip,
     className: cls,
   }
   const after = () => { if (isMobile) setOpenMobile(false) }
   return (
     <li>
+      {collapsed && tip && label && (
+        <Portal>
+          <span
+            role="tooltip"
+            style={{ left: tip.right + 12, top: tip.top + tip.height / 2 }}
+            className="pointer-events-none fixed z-[90] flex -translate-y-1/2 animate-hc-pop items-center gap-2 whitespace-nowrap rounded-[10px] bg-surface px-2.5 py-1.5 text-[12.5px] font-medium text-ink shadow-raised"
+          >
+            {label}
+            {badge !== undefined && <span className="rounded-full bg-bg px-1.5 font-mono text-[11px] shadow-inset-sm">{badge}</span>}
+          </span>
+        </Portal>
+      )}
       {href ? (
         <LinkComp href={href} {...common} onClick={after}>{body}</LinkComp>
       ) : (

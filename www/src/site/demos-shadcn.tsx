@@ -681,10 +681,11 @@ const columns: DataTableColumn<Order>[] = [
 
 <DataTable data={orders} columns={columns} rowId={(r) => r.id} selectable pageSize={10} />`,
     props: [
-      { name: "columns", type: "DataTableColumn<T>[]", description: "key, header, accessor?, cell?, sortable?, align?, mono?, hideOnMobile?" },
+      { name: "columns", type: "DataTableColumn<T>[]", description: "key, header, accessor?, cell?, sortable?, align?, mono? (no wrap), hideOnMobile?, hideBelow? (\"md\" | \"lg\" | \"xl\" | \"2xl\": drop minor columns on narrow desktops instead of scrolling sideways)" },
       { name: "data / rowId", type: "T[] / (row, i) => string", description: "Rows and their stable ids." },
-      { name: "searchable", type: "boolean | string[]", default: "true", description: "Search field; optionally limited to keys." },
-      { name: "selectable / onSelectionChange", type: "boolean / (ids) => void", description: "Checkbox column." },
+      { name: "searchable", type: "boolean | string[]", default: "true", description: "Search field; optionally limited to keys. Keys that are not columns read row[key]." },
+      { name: "selectable / onSelectionChange", type: "boolean / (ids) => void", description: "Checkbox column. The selection only ever contains rows that are still visible after search and filters." },
+      { name: "renderCard", type: "(row) => ReactNode", description: "Phone layout: each row as a card below the sm breakpoint." },
       { name: "pageSize", type: "number", default: "10", description: "0 shows all rows." },
       { name: "toolbar / empty / onRowClick", type: "ReactNode / ReactNode / (row) => void", description: "Extras." },
     ],
@@ -737,7 +738,7 @@ const columns: DataTableColumn<Order>[] = [
       { name: "SidebarProvider defaultOpen / open / onOpenChange", type: "boolean", default: "true", description: "Expanded on desktop." },
       { name: "SidebarProvider storageKey / shortcut", type: "string | false", default: '"hc-sidebar" / "b"', description: "Persistence and keyboard toggle." },
       { name: "Sidebar side", type: '"left" | "right"', default: '"left"', description: "Edge." },
-      { name: "SidebarMenuButton", type: "{ icon, active, badge, tooltip, href }", description: "Menu row." },
+      { name: "SidebarMenuButton", type: "{ icon, active, badge, tooltip, href, linkAs, external }", description: "Menu row. Collapsed rows show tooltip (or the text) in a floating tooltip; linkAs renders href rows with e.g. Next.js Link; external drops the LED for links that leave the app." },
       { name: "useSidebar()", type: "hook", description: "open, toggle, isMobile..." },
     ],
   },

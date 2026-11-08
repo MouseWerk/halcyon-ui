@@ -411,6 +411,7 @@ export const moreDemos: DemoEntry[] = [
       { name: "trigger", type: "ReactElement", description: "Element that opens it." },
       { name: "title / description", type: "ReactNode", description: "Header text." },
       { name: "open / onOpenChange", type: "boolean", description: "Controlled mode." },
+      { name: "SheetFooter", type: "component", description: "Action row pinned to the bottom while the body scrolls; covers the bottom padding so content never shows through." },
     ],
   },
   {

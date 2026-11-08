@@ -17,6 +17,8 @@ export interface DataTableColumn<T> {
   mono?: boolean
   /** Hide this column below the sm breakpoint. */
   hideOnMobile?: boolean
+  /** Hide this column below a wider breakpoint, so narrow desktops need no sideways scroll. */
+  hideBelow?: "md" | "lg" | "xl" | "2xl"
   className?: string
 }
 
@@ -56,6 +58,9 @@ export interface DataTableLabels {
 const DEFAULT_LABELS: DataTableLabels = { of: "of", rows: "rows", selectPage: "Select page", selectRow: "Select row", table: "Data table", selected: "selected" }
 
 type Sort = { key: string; dir: "asc" | "desc" } | null
+
+// Literal classes so Tailwind generates them
+const HIDE_BELOW = { md: "max-md:hidden", lg: "max-lg:hidden", xl: "max-xl:hidden", "2xl": "max-2xl:hidden" } as const
 
 /**
  * Table with sorting, search, row selection and pagination on top of the
@@ -184,7 +189,7 @@ export function DataTable<T>({
                   <th
                     key={c.key}
                     aria-sort={s === "asc" ? "ascending" : s === "desc" ? "descending" : c.sortable ? "none" : undefined}
-                    className={cn("px-3 py-1 text-left font-mono text-[10.5px] font-normal uppercase tracking-[.12em] text-muted", c.align === "right" && "text-right", c.hideOnMobile && "max-sm:hidden", c.className)}
+                    className={cn("px-3 py-1 text-left font-mono text-[10.5px] font-normal uppercase tracking-[.12em] text-muted", c.align === "right" && "text-right", c.hideOnMobile && "max-sm:hidden", c.hideBelow && HIDE_BELOW[c.hideBelow], c.className)}
                   >
                     {c.sortable ? (
                       <button type="button" onClick={() => toggleSort(c.key)} className={cn("inline-flex min-h-6 cursor-pointer items-center gap-1.5 uppercase tracking-[.12em] transition-colors hover:text-ink", s && "text-ink", c.align === "right" && "flex-row-reverse")}>
@@ -211,7 +216,7 @@ export function DataTable<T>({
                   key={id}
                   aria-selected={selectable ? on : undefined}
                   onClick={onRowClick ? () => onRowClick(row) : undefined}
-                  className={cn("group transition-transform duration-300 ease-spring hover:translate-x-1", onRowClick && "cursor-pointer")}
+                  className={cn("group", onRowClick && "cursor-pointer")}
                 >
                   {selectable && (
                     <td className={cn("rounded-l-xl px-3 py-[11px] transition-colors duration-300", on ? "bg-raise" : "bg-bg group-hover:bg-raise")} onClick={(e) => e.stopPropagation()}>
@@ -222,13 +227,15 @@ export function DataTable<T>({
                     <td
                       key={c.key}
                       className={cn(
-                        "px-3 py-[11px] tabular-nums transition-colors duration-300",
+                        // Long words (names, places) wrap instead of pushing the table sideways
+                        "px-3 py-[11px] tabular-nums transition-colors duration-300 [overflow-wrap:anywhere]",
                         on ? "bg-raise" : "bg-bg group-hover:bg-raise",
                         !selectable && ci === 0 && "rounded-l-xl",
                         ci === columns.length - 1 && "rounded-r-xl",
-                        c.mono && "font-mono text-[12.5px]",
+                        c.mono && "whitespace-nowrap font-mono text-[12.5px]",
                         c.align === "right" && "text-right font-mono",
                         c.hideOnMobile && "max-sm:hidden",
+                        c.hideBelow && HIDE_BELOW[c.hideBelow],
                         c.className,
                       )}
                     >

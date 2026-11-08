@@ -137,11 +137,11 @@
 @layer base {
   /*
    * Safety layer: defaults that keep any app built with Halcyon stable on
-   * every device. No sideways scroll, no layout jump when a scrollbar
-   * appears or a modal locks scrolling, no grey tap flashes, safe-area aware.
+   * every device. No sideways scroll, no layout jump when a modal locks
+   * scrolling (the lock pads the body instead of reserving an empty strip),
+   * no grey tap flashes, safe-area aware.
    */
   html {
-    scrollbar-gutter: stable;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
@@ -164,6 +164,8 @@
   button, [role="button"], [role="switch"], [role="tab"], [role="option"], [role="menuitem"], label { touch-action: manipulation; }
   p, li, h1, h2, h3, h4 { overflow-wrap: break-word; }
   [hidden] { display: none !important; }
+  /* Inputs with suggestions: no native datalist arrow (suggestions still open while typing) */
+  input[list]::-webkit-calendar-picker-indicator { display: none !important; }
   :focus-visible {
     outline: 2px solid var(--hc-glow);
     outline-offset: 3px;
@@ -179,6 +181,8 @@
    */
   ::-webkit-scrollbar { width: 12px; height: 12px; }
   ::-webkit-scrollbar-track { background: transparent; }
+  /* Inner scroll areas are rounded: keep the thumb clear of the corners */
+  body *::-webkit-scrollbar-track { margin-block: 14px; }
   ::-webkit-scrollbar-corner { background: transparent; }
   ::-webkit-scrollbar-thumb {
     border: 3.5px solid transparent;

@@ -78,3 +78,16 @@ export function Sheet({ open, defaultOpen, onOpenChange, side = "right", title, 
     </>
   )
 }
+
+/**
+ * Action row pinned to the bottom of a Sheet while its body scrolls. It covers
+ * the Sheet's bottom padding too, so no content shows through underneath.
+ */
+export function SheetFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn("sticky -bottom-6 z-10 -mx-1 -mb-6 mt-auto flex flex-wrap items-center gap-2.5 bg-surface px-1 pb-6 pt-3", className)}
+      {...props}
+    />
+  )
+}
