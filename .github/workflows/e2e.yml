@@ -12,8 +12,25 @@ concurrency:
 
 jobs:
   e2e:
+    name: e2e (${{ matrix.name }})
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: chromium
+            browsers: chromium
+            projects: --project=desktop-chromium --project=desktop-chromium-dark
+          - name: firefox
+            browsers: firefox
+            projects: --project=desktop-firefox
+          - name: webkit
+            browsers: webkit
+            projects: --project=desktop-webkit
+          - name: mobile
+            browsers: chromium webkit
+            projects: --project=tablet --project=phone-android --project=phone-ios
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -25,15 +42,15 @@ jobs:
         working-directory: www
       - run: npm run typecheck
         working-directory: www
-      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npx playwright install --with-deps ${{ matrix.browsers }}
         working-directory: www
-      - run: npm run e2e
+      - run: npx playwright test ${{ matrix.projects }}
         working-directory: www
         env:
           CI: "1"
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.name }}
           path: www/playwright-report
           retention-days: 7

@@ -72,7 +72,7 @@ export function Resizable({ children, direction = "horizontal", defaultSizes, mi
   }
 
   return (
-    <div ref={root} className={cn("flex min-h-0 min-w-0 overflow-hidden", h ? "flex-row" : "flex-col", dragging !== null && "select-none", className)} {...props}>
+    <div ref={root} className={cn("flex size-full min-h-0 min-w-0 overflow-hidden", h ? "flex-row" : "flex-col", dragging !== null && "select-none", className)} {...props}>
       {panels.map((p, i) => (
         <React.Fragment key={i}>
           <div className="min-h-0 min-w-0 overflow-hidden" style={{ flex: `${sizes[i]} 1 0px` }}>{p}</div>

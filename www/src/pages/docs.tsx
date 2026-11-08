@@ -26,7 +26,7 @@ function SourceCode({ name }: { name: string }) {
     return () => { live = false }
   }, [name])
   if (code === null) return <div className="grid h-40 place-items-center rounded-2xl bg-bg shadow-inset"><Spinner /></div>
-  return <Code code={code} maxHeight={520} />
+  return <div data-source={name}><Code code={code} maxHeight={520} /></div>
 }
 const tokensCss = (import.meta.glob("../../../registry/styles/halcyon.css", { query: "?raw", import: "default", eager: true }) as Record<string, string>)["../../../registry/styles/halcyon.css"] ?? ""
 

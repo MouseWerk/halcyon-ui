@@ -3,9 +3,20 @@ import { test as base, expect, type Page } from "@playwright/test"
 /** Fails any test that logs a console error, a React warning or an uncaught exception. */
 export const test = base.extend<{ issues: string[] }>({
   issues: [async ({ page }, use) => {
+    // Smooth page scrolling makes the runner's scroll-into-view animate, so clicks can land
+    // where an element used to be (seen in Firefox). Users click what they see; tests should too.
+    await page.addInitScript(() => {
+      document.addEventListener("DOMContentLoaded", () => {
+        const s = document.createElement("style")
+        s.textContent = "html{scroll-behavior:auto!important}"
+        document.head.appendChild(s)
+      })
+    })
     const issues: string[] = []
     page.on("pageerror", (e) => issues.push(`pageerror: ${e.message}`))
     page.on("console", (m) => {
+      // Firefox flags Google's Doto font file (malformed STAT table it discards); the font still renders.
+      if (/downloadable font:/.test(m.text())) return
       if (m.type() === "error" || (m.type() === "warning" && /react|warning:/i.test(m.text()))) issues.push(`${m.type()}: ${m.text()}`)
     })
     await use(issues)

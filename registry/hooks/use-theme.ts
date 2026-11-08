@@ -27,6 +27,10 @@ function snapshot(): Theme {
   return stored() ?? systemTheme()
 }
 
+// Set once the user picks a theme, so the OS setting never overrides that choice in this
+// session, even when storage is unavailable (private mode, blocked cookies, some WebViews).
+let chosen = false
+
 /**
  * Turn CSS transitions off for one paint while the theme flips. Otherwise
  * every surface animates its colors and shadows at once, which stutters on
@@ -45,6 +49,7 @@ function suppressTransitions() {
 }
 
 export function applyTheme(theme: Theme, persist = true) {
+  if (persist) chosen = true
   const root = document.documentElement
   const restore = suppressTransitions()
   root.dataset.theme = theme
@@ -60,7 +65,7 @@ function subscribe(cb: () => void) {
   const obs = new MutationObserver(cb)
   obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme"] })
   const mq = window.matchMedia("(prefers-color-scheme: dark)")
-  const onSystem = () => { if (!stored()) applyTheme(systemTheme(), false) }
+  const onSystem = () => { if (!chosen && !stored()) applyTheme(systemTheme(), false) }
   mq.addEventListener("change", onSystem)
   const onStorage = (e: StorageEvent) => {
     if (e.key === THEME_STORAGE_KEY && (e.newValue === "light" || e.newValue === "dark")) applyTheme(e.newValue, false)

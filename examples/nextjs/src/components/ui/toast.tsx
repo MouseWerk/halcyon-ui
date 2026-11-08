@@ -129,8 +129,10 @@ function ToastCard({ t, top, closeButton, onClose, onPause, onResume }: { t: Liv
   const start = React.useRef<number | null>(null)
   return (
     <li
-      onPointerEnter={onPause}
-      onPointerLeave={onResume}
+      // pause on hover only for a real mouse: touch browsers send an enter at the last tap point
+      // and never a leave, which would keep the toast up forever
+      onPointerEnter={(e) => { if (e.pointerType === "mouse") onPause() }}
+      onPointerLeave={(e) => { if (e.pointerType === "mouse") onResume() }}
       onPointerDown={(e) => { if ((e.target as HTMLElement).closest("button")) return; start.current = e.clientX; e.currentTarget.setPointerCapture(e.pointerId) }}
       onPointerMove={(e) => { if (start.current !== null) setDx(e.clientX - start.current) }}
       onPointerUp={() => { start.current = null; if (Math.abs(dx) > 80) onClose(); else setDx(0) }}

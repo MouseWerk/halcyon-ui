@@ -33,8 +33,12 @@ export function ThemeSwitch({ reveal = true, size = "md", className, style, ...p
   function onClick() {
     const next = dark ? "light" : "dark"
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    const doc = document as Document & { startViewTransition?: (cb: () => Promise<void> | void) => { ready: Promise<void> } }
-    if (!reveal || reduced || !doc.startViewTransition || !ref.current) {
+    const doc = document as Document & { startViewTransition?: (cb: () => Promise<void> | void) => { ready: Promise<void>; finished?: Promise<void> } }
+    // WebKit can stall on startViewTransition here (the click lands but the update never runs,
+    // seen in CI on desktop and iPad WebKit), so Safari gets the instant swap instead of the reveal.
+    const webkit = /AppleWebKit/.test(navigator.userAgent) && !/Chrome|Chromium|Edg|Firefox|FxiOS|CriOS/.test(navigator.userAgent)
+    // No reveal when it can't be seen (background tab, headless) or isn't wanted.
+    if (!reveal || reduced || webkit || !doc.startViewTransition || !ref.current || document.visibilityState !== "visible") {
       applyTheme(next)
       return
     }
@@ -42,8 +46,18 @@ export function ThemeSwitch({ reveal = true, size = "md", className, style, ...p
     const x = r.left + r.width / 2
     const y = r.top + r.height / 2
     const end = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))
-    // let React commit the new knob position before the "new" snapshot is taken
-    const vt = doc.startViewTransition(() => { applyTheme(next); return new Promise<void>((r) => setTimeout(r, 0)) })
+    // Make sure the click always lands, even if the engine skips or drops the update callback.
+    const ensure = () => { if (document.documentElement.dataset.theme !== next) applyTheme(next) }
+    let vt: { ready: Promise<void>; finished?: Promise<void> }
+    try {
+      // let React commit the new knob position before the "new" snapshot is taken
+      vt = doc.startViewTransition(() => { applyTheme(next); return new Promise<void>((res) => setTimeout(res, 0)) })
+    } catch {
+      applyTheme(next) // a transition was already running, or the engine refused it
+      return
+    }
+    setTimeout(ensure, 300)
+    vt.finished?.then(ensure, ensure)
     vt.ready
       .then(() => {
         document.documentElement.animate(
@@ -59,6 +73,7 @@ export function ThemeSwitch({ reveal = true, size = "md", className, style, ...p
       ref={ref}
       type="button"
       role="switch"
+      data-hc-keep-motion=""
       aria-checked={dark}
       aria-label="Dark mode"
       onClick={onClick}

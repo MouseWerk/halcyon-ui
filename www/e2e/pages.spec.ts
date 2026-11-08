@@ -31,7 +31,7 @@ test.describe("component docs", () => {
       await noHorizontalOverflow(page)
       // the Code tab shows the real source file
       await page.getByRole("button", { name: "Code", exact: true }).click()
-      await expect(page.locator("pre").first()).toContainText("export")
+      await expect(page.locator(`[data-source="${c.name}"] pre`)).toContainText("export")
     })
   }
 
