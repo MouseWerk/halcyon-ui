@@ -32,6 +32,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         className={cn(
           "relative rounded-[14px] bg-bg shadow-inset transition-shadow duration-300",
           "focus-within:shadow-[inset_3px_3px_7px_var(--hc-sh-dark),inset_-3px_-3px_7px_var(--hc-sh-light),0_0_0_1.5px_var(--hc-glow-soft)]",
+          "has-[[aria-invalid=true]]:shadow-[inset_3px_3px_7px_var(--hc-sh-dark),inset_-3px_-3px_7px_var(--hc-sh-light),0_0_0_1.5px_var(--hc-bad)]",
           className,
         )}
       >

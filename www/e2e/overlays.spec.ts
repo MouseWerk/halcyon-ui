@@ -84,8 +84,21 @@ test("command palette opens with Ctrl/Cmd+K and navigates", async ({ page }, inf
 test("toast springs in and leaves", async ({ page }) => {
   const demo = await openComponent(page, "toast")
   await demo.getByRole("button").first().click()
-  const t = page.locator('[role="status"][aria-live="polite"] > div').first()
+  const t = page.locator('section[aria-label="Notifications"] li').first()
   await expect(t).toBeVisible()
   await expect(t).toHaveCSS("opacity", "1")
-  await expect(t).toBeHidden({ timeout: 6000 })
+  await expect(t).toBeHidden({ timeout: 8000 })
+})
+
+test("toast action, description and promise", async ({ page }) => {
+  const demo = await openComponent(page, "toast")
+  const region = page.locator('section[aria-label="Notifications"]')
+  await demo.getByRole("button", { name: "Error toast" }).click()
+  await expect(region).toContainText("3 retries left")
+  await demo.getByRole("button", { name: "With action" }).click()
+  await region.getByRole("button", { name: "Undo" }).click()
+  await expect(region).toContainText("Restored")
+  await demo.getByRole("button", { name: "Promise" }).click()
+  await expect(region).toContainText("Deploying...")
+  await expect(region).toContainText("Deployed to production", { timeout: 5000 })
 })

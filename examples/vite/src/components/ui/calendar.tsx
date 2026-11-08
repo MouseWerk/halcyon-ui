@@ -3,7 +3,14 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
+export type DateRange = { from: Date | null; to: Date | null }
+
 export interface CalendarProps {
+  /** `range` picks a start and an end day. */
+  mode?: "single" | "range"
+  range?: DateRange
+  defaultRange?: DateRange
+  onRangeChange?: (range: DateRange) => void
   value?: Date | null
   defaultValue?: Date | null
   onValueChange?: (date: Date) => void
@@ -31,9 +38,16 @@ const addMonths = (d: Date, n: number) => {
  * day is a raised glowing key. Arrow keys, PageUp/PageDown (month) and
  * Home/End (week) move the focus like a native date picker.
  */
-export function Calendar({ value, defaultValue = null, onValueChange, min, max, isDisabled, weekStartsOn = 1, locale, className }: CalendarProps) {
+export function Calendar({
+  mode = "single", range, defaultRange = { from: null, to: null }, onRangeChange,
+  value, defaultValue = null, onValueChange, min, max, isDisabled, weekStartsOn = 1, locale, className,
+}: CalendarProps) {
   const [inner, setInner] = React.useState<Date | null>(defaultValue)
-  const selected = value !== undefined ? value : inner
+  const [innerRange, setInnerRange] = React.useState<DateRange>(defaultRange)
+  const r = range ?? innerRange
+  const [hover, setHover] = React.useState<Date | null>(null)
+  const isRange = mode === "range"
+  const selected = isRange ? r.from : value !== undefined ? value : inner
   // Lazy init keeps SSR and the client in agreement for the first render.
   const [focus, setFocus] = React.useState<Date>(() => day(selected ?? new Date()))
   const [today, setToday] = React.useState<Date | null>(null)
@@ -63,10 +77,20 @@ export function Calendar({ value, defaultValue = null, onValueChange, min, max, 
 
   const choose = (d: Date) => {
     if (blocked(d)) return
-    setInner(d)
-    onValueChange?.(d)
+    if (isRange) {
+      const next: DateRange = !r.from || r.to ? { from: d, to: null } : d < r.from ? { from: d, to: r.from } : { from: r.from, to: d }
+      setInnerRange(next)
+      onRangeChange?.(next)
+    } else {
+      setInner(d)
+      onValueChange?.(d)
+    }
     move(d, false)
   }
+  // Range preview while picking the end day.
+  const rangeEnd = isRange ? r.to ?? (r.from && hover ? hover : null) : null
+  const lo = isRange && r.from && rangeEnd ? (rangeEnd < r.from ? rangeEnd : r.from) : null
+  const hi = isRange && r.from && rangeEnd ? (rangeEnd < r.from ? r.from : rangeEnd) : null
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     const map: Record<string, () => Date> = {
@@ -98,14 +122,15 @@ export function Calendar({ value, defaultValue = null, onValueChange, min, max, 
         <div aria-live="polite" className="flex-1 text-center text-sm font-semibold tracking-tight">{title}</div>
         {nav(1)}
       </div>
-      <div role="group" aria-label={title} ref={grid} onKeyDown={onKeyDown} className="rounded-2xl bg-bg p-2 shadow-inset-sm">
+      <div role="group" aria-label={title} ref={grid} onKeyDown={onKeyDown} onPointerLeave={() => setHover(null)} className="rounded-2xl bg-bg p-2 shadow-inset-sm">
         <div aria-hidden="true" className="mb-1 grid grid-cols-7">
           {weekdays.map((w, i) => <span key={i} className="py-1 text-center font-mono text-[10.5px] uppercase text-muted">{w}</span>)}
         </div>
         <div key={`${month.getFullYear()}-${month.getMonth()}`} className={cn("grid grid-cols-7 gap-0.5", dir !== 0 && "animate-hc-rise")}>
           {cells.map((d) => {
             const inMonth = d.getMonth() === month.getMonth()
-            const sel = same(d, selected)
+            const sel = isRange ? same(d, r.from) || same(d, r.to) : same(d, selected)
+            const between = !!lo && !!hi && d > lo && d < hi
             const isToday = same(d, today)
             const off = blocked(d)
             const focused = same(d, focus)
@@ -120,10 +145,11 @@ export function Calendar({ value, defaultValue = null, onValueChange, min, max, 
                 aria-disabled={off || undefined}
                 aria-label={d.toLocaleDateString(locale, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
                 onClick={() => choose(d)}
+                onPointerEnter={() => isRange && setHover(d)}
                 className={cn(
                   "relative grid aspect-square cursor-pointer place-items-center rounded-[10px] font-mono text-[12.5px] tabular-nums",
                   "transition-[box-shadow,background-color,color,scale] duration-200 ease-spring active:scale-90",
-                  sel ? "bg-surface text-ink shadow-glow" : "hover:bg-raise/70 hover:shadow-raised-sm",
+                  sel ? "bg-surface text-ink shadow-glow" : between ? "rounded-[6px] bg-[color-mix(in_oklab,var(--hc-glow-soft)_55%,transparent)]" : "hover:bg-raise/70 hover:shadow-raised-sm",
                   inMonth && !sel && "text-ink",
                   !inMonth && !sel && "text-muted",
                   off && "pointer-events-none text-muted/30 line-through",

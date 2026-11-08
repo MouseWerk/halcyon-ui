@@ -5,17 +5,29 @@ import { Badge } from "@/components/ui/badge"
 import { DotIcon } from "@/components/ui/dot-icon"
 import { ErrorBoundary } from "@/components/ui/error-boundary"
 import { Code, Command } from "../site/code"
-import { NPX } from "../site/shell"
+import { NPX, SHADCN_REGISTRY } from "../site/shell"
 import { demos, groups } from "../site/demos"
 import { href } from "../router"
 import { IconArrow, IconMenu, IconSearch } from "../site/icons"
 import { Input } from "@/components/ui/input"
+import { Spinner } from "@/components/ui/spinner"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Sheet } from "@/components/ui/sheet"
 import type { GlyphName } from "@/lib/dot-matrix"
 
-const sources = import.meta.glob("../../../registry/ui/*.tsx", { query: "?raw", import: "default", eager: true }) as Record<string, string>
-const sourceOf = (name: string) => sources[`../../../registry/ui/${name}.tsx`] ?? ""
+// Component sources load on demand when the Code tab opens (keeps the docs chunk small).
+const sources = import.meta.glob("../../../registry/ui/*.tsx", { query: "?raw", import: "default" }) as Record<string, () => Promise<string>>
+function SourceCode({ name }: { name: string }) {
+  const [code, setCode] = React.useState<string | null>(null)
+  React.useEffect(() => {
+    let live = true
+    setCode(null)
+    sources[`../../../registry/ui/${name}.tsx`]?.().then((c) => { if (live) setCode(c) })
+    return () => { live = false }
+  }, [name])
+  if (code === null) return <div className="grid h-40 place-items-center rounded-2xl bg-bg shadow-inset"><Spinner /></div>
+  return <Code code={code} maxHeight={520} />
+}
 const tokensCss = (import.meta.glob("../../../registry/styles/halcyon.css", { query: "?raw", import: "default", eager: true }) as Record<string, string>)["../../../registry/styles/halcyon.css"] ?? ""
 
 const guides = [
@@ -244,6 +256,17 @@ function Installation() {
           { title: "Add components", body: <><Command cmd={`${NPX} add theme-switch stat dot-chart`} /><P>Dependencies between components are resolved for you.</P></> },
         ]}
       />
+      <H2>Already using shadcn/ui?</H2>
+      <P>Every component is also published as a shadcn registry item, so the official CLI installs it into an existing shadcn project. The design tokens are merged into your CSS automatically and Halcyon components sit next to your shadcn ones.</P>
+      <Command cmd={`npx shadcn@latest add ${SHADCN_REGISTRY}/sidebar.json`} />
+      <P>Or register the namespace once in <C>components.json</C> and use short names:</P>
+      <Code code={`{
+  "registries": {
+    "@halcyon": "${SHADCN_REGISTRY}/{name}.json"
+  }
+}`} />
+      <Command cmd="npx shadcn@latest add @halcyon/knob @halcyon/data-table" />
+      <P>shadcn already defines a <C>muted</C> colour, so in shadcn projects Halcyon's secondary text colour is called <C>text-hc-muted</C>. Everything else keeps its name.</P>
     </>
   )
 }
@@ -477,11 +500,13 @@ function ComponentPage({ name }: { name: string }) {
           <ErrorBoundary resetKeys={[name]}><d.Demo key={name} /></ErrorBoundary>
         </div>
       ) : (
-        <Code code={sourceOf(d.name)} maxHeight={520} />
+        <SourceCode name={d.name} />
       )}
 
       <H2>Installation</H2>
       <Command cmd={`${NPX} add ${d.name}`} />
+      <P>With the shadcn CLI:</P>
+      <Command cmd={`npx shadcn@latest add ${SHADCN_REGISTRY}/${d.name}.json`} />
 
       <H2>Usage</H2>
       <Code code={d.usage} />

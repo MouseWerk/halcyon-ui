@@ -1,4 +1,5 @@
 import { test, expect, go, noHorizontalOverflow } from "./fixtures"
+import { catalog } from "../src/site/catalog"
 
 test("landing admin preview has a working sidebar on every screen size", async ({ page }) => {
   await go(page, "/")
@@ -28,5 +29,5 @@ test("landing admin preview has a working sidebar on every screen size", async (
 
 test("landing renders the component count from the catalog", async ({ page }) => {
   await go(page, "/")
-  await expect(page.getByText(/61 pieces/)).toBeVisible()
+  await expect(page.getByText(new RegExp(`${catalog.length} pieces`))).toBeVisible()
 })

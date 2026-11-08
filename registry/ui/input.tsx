@@ -17,6 +17,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         "transition-[box-shadow,background-color] duration-300 ease-out-soft",
         "focus-within:shadow-[inset_3px_3px_7px_var(--hc-sh-dark),inset_-3px_-3px_7px_var(--hc-sh-light),0_0_0_1.5px_var(--hc-glow-soft)]",
         "[&_svg]:size-4 [&_svg]:shrink-0",
+        "has-[[aria-invalid=true]]:shadow-[inset_3px_3px_7px_var(--hc-sh-dark),inset_-3px_-3px_7px_var(--hc-sh-light),0_0_0_1.5px_var(--hc-bad)]",
         className,
       )}
     >

@@ -21,6 +21,7 @@ import { Meter } from "@/components/ui/meter"
 import { glyphs, type GlyphName } from "@/lib/dot-matrix"
 import { moreDemos } from "./demos-more"
 import { newDemos } from "./demos-new"
+import { shadcnDemos } from "./demos-shadcn"
 import { IconBag, IconBell, IconChart, IconDownload, IconGrid, IconSearch, IconUsers } from "./icons"
 
 export type Prop = { name: string; type: string; default?: string; description: string }
@@ -418,11 +419,13 @@ const arrow = bitmap(["..#..", ".###.", "#####", "..#..", "..#.."])
   },
   {
     name: "toast", title: "Toast", group: "Feedback",
-    description: "Call toast() from anywhere. Messages spring up from the bottom edge with a status lamp.",
+    description: "Call toast() from anywhere. Messages spring in from the edge with a status lamp, an optional description and action, and can be swiped away. toast.promise follows an async task.",
     Demo: () => (
       <div className="flex flex-wrap justify-center gap-3">
-        <Button onClick={() => toast("Changes saved", { tone: "ok" })}>Show toast</Button>
-        <Button variant="danger" onClick={() => toast("Webhook endpoint failing", { tone: "bad" })}>Error toast</Button>
+        <Button onClick={() => toast.success("Changes saved")}>Show toast</Button>
+        <Button variant="danger" onClick={() => toast.error("Webhook endpoint failing", { description: "3 retries left. Next attempt in 30 s." })}>Error toast</Button>
+        <Button onClick={() => toast("Order archived", { action: { label: "Undo", onClick: () => toast("Restored") } })}>With action</Button>
+        <Button onClick={() => toast.promise(new Promise((r) => setTimeout(r, 1500)), { loading: "Deploying...", success: "Deployed to production", error: "Deploy failed" })}>Promise</Button>
       </div>
     ),
     usage: `import { Toaster, toast } from "@/components/ui/toast"
@@ -431,10 +434,16 @@ const arrow = bitmap(["..#..", ".###.", "#####", "..#..", "..#.."])
 <Toaster />
 
 toast("Changes saved")
-toast("Webhook endpoint failing", { tone: "bad" })`,
+toast.error("Webhook failing", { description: "3 retries left" })
+toast("Archived", { action: { label: "Undo", onClick: restore } })
+toast.promise(deploy(), { loading: "Deploying...", success: "Live", error: "Failed" })`,
     props: [
-      { name: "toast(message, { tone })", type: '"glow" | "ok" | "warn" | "bad"', default: '"glow"', description: "Shows a toast." },
-      { name: "Toaster duration", type: "number", default: "2400", description: "How long each toast stays, in ms." },
+      { name: "toast(message, options)", type: "{ tone?, description?, action?, duration?, id? }", description: "Shows a toast and returns its id." },
+      { name: "toast.success / warning / error", type: "(message, options) => id", description: "Tone shortcuts." },
+      { name: "toast.promise", type: "(promise, { loading, success, error })", description: "Loading toast that resolves to success or error." },
+      { name: "toast.dismiss", type: "(id?) => void", description: "Dismiss one toast or all." },
+      { name: "Toaster position", type: '"bottom-center" | "top-center" | "bottom-right" | "top-right"', default: '"bottom-center"', description: "Where toasts appear." },
+      { name: "Toaster duration / max / closeButton", type: "number / number / boolean", default: "3200 / 3 / false", description: "Timing, stack size, close key." },
     ],
   },
   {
@@ -467,6 +476,6 @@ toast("Webhook endpoint failing", { tone: "bad" })`,
 import { groups } from "./catalog"
 export { groups }
 
-export const demos: DemoEntry[] = [...baseDemos, ...moreDemos, ...newDemos].sort(
+export const demos: DemoEntry[] = [...baseDemos, ...moreDemos, ...newDemos, ...shadcnDemos].sort(
   (a, b) => groups.indexOf(a.group) - groups.indexOf(b.group),
 )

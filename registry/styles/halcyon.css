@@ -27,6 +27,12 @@
   --hc-ok: #1b6e3d;
   --hc-warn: #b8960a;
   --hc-bad: #b0362b;
+  /* categorical chart slots, validated for colour-blind separation (light card surface) */
+  --hc-chart-1: #d08700;
+  --hc-chart-2: #2a78d6;
+  --hc-chart-3: #d95926;
+  --hc-chart-4: #199e70;
+  --hc-chart-5: #9b4fd1;
   --hc-radius: 20px;
   color-scheme: light;
 }
@@ -49,6 +55,12 @@
   --hc-ok: #4cc77f;
   --hc-warn: #e3ab3d;
   --hc-bad: #f06a5d;
+  /* validated against the dark card surface */
+  --hc-chart-1: #9085e9;
+  --hc-chart-2: #c98500;
+  --hc-chart-3: #199e70;
+  --hc-chart-4: #d95926;
+  --hc-chart-5: #3987e5;
   color-scheme: dark;
 }
 
@@ -66,6 +78,11 @@
   --color-ok: var(--hc-ok);
   --color-warn: var(--hc-warn);
   --color-bad: var(--hc-bad);
+  --color-chart-1: var(--hc-chart-1);
+  --color-chart-2: var(--hc-chart-2);
+  --color-chart-3: var(--hc-chart-3);
+  --color-chart-4: var(--hc-chart-4);
+  --color-chart-5: var(--hc-chart-5);
 
   /* --hc-font-* are optional hooks for next/font or self-hosted fonts. */
   --font-sans: var(--hc-font-sans, "Geist"), ui-sans-serif, system-ui, "Segoe UI", sans-serif;

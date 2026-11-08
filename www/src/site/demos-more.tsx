@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioItem } from "@/components/ui/radio-group"
-import { Slider } from "@/components/ui/slider"
+import { Slider, RangeSlider } from "@/components/ui/slider"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { Select } from "@/components/ui/select"
@@ -47,6 +47,7 @@ function CheckboxDemo() {
 function SliderDemo() {
   const [v, setV] = React.useState(64)
   const [replicas, setReplicas] = React.useState(3)
+  const [price, setPrice] = React.useState<[number, number]>([80, 320])
   return (
     <div className="flex w-full max-w-sm flex-col gap-8">
       <div className="flex flex-col gap-2">
@@ -56,6 +57,10 @@ function SliderDemo() {
       <div className="flex flex-col gap-2">
         <div className="flex justify-between text-[13px]"><Label>Replicas</Label><span className="font-mono text-muted">{replicas}</span></div>
         <Slider value={replicas} onValueChange={setReplicas} min={1} max={9} ticks={9} aria-label="Replicas" />
+      </div>
+      <div className="flex flex-col gap-2">
+        <div className="flex justify-between text-[13px]"><Label>Price</Label><span className="font-mono text-muted">{`$${price[0]} – $${price[1]}`}</span></div>
+        <RangeSlider value={price} onValueChange={setPrice} max={500} step={10} minDistance={20} labels={["Minimum price", "Maximum price"]} format={(x) => `$${x}`} />
       </div>
     </div>
   )
@@ -192,12 +197,14 @@ export const moreDemos: DemoEntry[] = [
     Demo: SliderDemo,
     usage: `import { Slider } from "@/components/ui/slider"
 
-<Slider value={volume} onValueChange={setVolume} aria-label="Volume" />`,
+<Slider value={volume} onValueChange={setVolume} aria-label="Volume" />
+<RangeSlider value={[min, max]} onValueChange={([a, b]) => setRange(a, b)} minDistance={20} />`,
     props: [
       { name: "value / defaultValue", type: "number", default: "50", description: "Current value." },
       { name: "min / max / step", type: "number", default: "0 / 100 / 1", description: "Range." },
       { name: "ticks", type: "number", description: "Show tick dots." },
       { name: "format", type: "(v: number) => string", description: "Value bubble text." },
+      { name: "RangeSlider value", type: "[number, number]", description: "Two thumbs; also takes minDistance and labels." },
     ],
   },
   {
