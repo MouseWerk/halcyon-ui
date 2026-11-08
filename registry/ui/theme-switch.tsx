@@ -43,7 +43,17 @@ export function ThemeSwitch({ reveal = true, size = "md", className, style, ...p
     const y = r.top + r.height / 2
     const end = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))
     // let React commit the new knob position before the "new" snapshot is taken
-    const vt = doc.startViewTransition(() => { applyTheme(next); return new Promise<void>((r) => setTimeout(r, 0)) })
+    let applied = false
+    const apply = () => { if (!applied) { applied = true; applyTheme(next) } }
+    let vt: { ready: Promise<void> }
+    try {
+      vt = doc.startViewTransition(() => { apply(); return new Promise<void>((r) => setTimeout(r, 0)) })
+    } catch {
+      apply() // a transition was already running, or the engine refused it
+      return
+    }
+    // Safety net: some engines skip the update callback; never leave the click without effect.
+    setTimeout(apply, 300)
     vt.ready
       .then(() => {
         document.documentElement.animate(

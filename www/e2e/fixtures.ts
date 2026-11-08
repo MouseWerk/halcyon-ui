@@ -6,6 +6,8 @@ export const test = base.extend<{ issues: string[] }>({
     const issues: string[] = []
     page.on("pageerror", (e) => issues.push(`pageerror: ${e.message}`))
     page.on("console", (m) => {
+      // Firefox flags Google's Doto font file (malformed STAT table it discards); the font still renders.
+      if (/downloadable font:/.test(m.text())) return
       if (m.type() === "error" || (m.type() === "warning" && /react|warning:/i.test(m.text()))) issues.push(`${m.type()}: ${m.text()}`)
     })
     await use(issues)
