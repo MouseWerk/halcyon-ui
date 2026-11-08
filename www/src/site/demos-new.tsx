@@ -9,7 +9,7 @@ import { NumberInput } from "@/components/ui/number-input"
 import { OtpInput } from "@/components/ui/otp-input"
 import { PasswordInput } from "@/components/ui/password-input"
 import { Combobox } from "@/components/ui/combobox"
-import { Calendar } from "@/components/ui/calendar"
+import { Calendar, type DateRange } from "@/components/ui/calendar"
 import { FileDrop } from "@/components/ui/file-drop"
 import { Rating } from "@/components/ui/rating"
 import { AvatarGroup } from "@/components/ui/avatar-group"
@@ -136,10 +136,17 @@ function ComboDemo() {
 
 function CalendarDemo() {
   const [d, setD] = React.useState<Date | null>(null)
+  const [r, setR] = React.useState<DateRange>({ from: null, to: null })
   return (
-    <div className="flex flex-col items-center gap-3">
-      <Calendar value={d} onValueChange={setD} isDisabled={(x) => x.getDay() === 0} />
-      <span className="font-mono text-xs text-muted">{d ? d.toDateString() : "Pick a day (Sundays are off)"}</span>
+    <div className="flex flex-wrap items-start justify-center gap-6">
+      <div className="flex flex-col items-center gap-3">
+        <Calendar value={d} onValueChange={setD} isDisabled={(x) => x.getDay() === 0} />
+        <span className="font-mono text-xs text-muted">{d ? d.toDateString() : "Pick a day (Sundays are off)"}</span>
+      </div>
+      <div data-range-calendar className="flex flex-col items-center gap-3">
+        <Calendar mode="range" range={r} onRangeChange={setR} />
+        <span className="font-mono text-xs text-muted">{r.from ? `${r.from.toDateString()} → ${r.to ? r.to.toDateString() : "…"}` : "Pick a range"}</span>
+      </div>
     </div>
   )
 }
@@ -364,6 +371,8 @@ export const newDemos: DemoEntry[] = [
 
 <Calendar value={date} onValueChange={setDate} min={new Date()} />`,
     props: [
+      { name: "mode", type: '"single" | "range"', default: '"single"', description: "Pick one day or a start and end." },
+      { name: "range / defaultRange / onRangeChange", type: "{ from, to }", description: "Range mode value." },
       { name: "value / defaultValue", type: "Date | null", description: "Selected day." },
       { name: "onValueChange", type: "(date: Date) => void", description: "Called on pick." },
       { name: "min / max", type: "Date", description: "Selectable range." },

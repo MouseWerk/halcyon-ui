@@ -122,7 +122,7 @@
       ]
     },
     "toast": {
-      "description": "toast() function and <Toaster /> that springs up from the bottom.",
+      "description": "toast() / toast.success / toast.promise from anywhere; <Toaster /> with actions, descriptions, positions and swipe to dismiss.",
       "files": [
         "ui/toast.tsx"
       ],
@@ -179,7 +179,7 @@
       ]
     },
     "slider": {
-      "description": "Dot-track slider with a glowing knob and value bubble.",
+      "description": "Dot-track slider with a glowing knob and value bubble. Also exports RangeSlider (two thumbs).",
       "files": [
         "ui/slider.tsx"
       ]
@@ -343,7 +343,7 @@
       ]
     },
     "calendar": {
-      "description": "Month grid date picker with native-style keyboard navigation.",
+      "description": "Month grid date picker, single day or a range, with native-style keyboard navigation.",
       "files": [
         "ui/calendar.tsx"
       ]
@@ -412,6 +412,142 @@
       "description": "Step indicator for multi-step flows, horizontal or vertical.",
       "files": [
         "ui/steps.tsx"
+      ]
+    },
+    "alert-dialog": {
+      "description": "Confirmation dialog that waits for an answer: no backdrop close, Cancel focused first, async actions with a spinner.",
+      "files": [
+        "ui/alert-dialog.tsx",
+        "lib/overlay.tsx"
+      ]
+    },
+    "aspect-ratio": {
+      "description": "Keeps media at a fixed ratio, optionally in an inset or raised frame.",
+      "files": [
+        "ui/aspect-ratio.tsx"
+      ]
+    },
+    "button-group": {
+      "description": "Joins buttons into one raised strip with engraved separators.",
+      "files": [
+        "ui/button-group.tsx"
+      ]
+    },
+    "carousel": {
+      "description": "Swipeable scroll-snap carousel with raised arrows, dot indicators, keyboard and autoplay.",
+      "files": [
+        "ui/carousel.tsx"
+      ]
+    },
+    "chart": {
+      "description": "Area, line, bar and donut charts in plain SVG with tooltips, keyboard navigation and colour-blind-safe slots.",
+      "files": [
+        "ui/chart.tsx"
+      ]
+    },
+    "collapsible": {
+      "description": "Show/hide a section with an animated height.",
+      "files": [
+        "ui/collapsible.tsx",
+        "lib/overlay.tsx"
+      ]
+    },
+    "context-menu": {
+      "description": "Right-click / long-press menu at the pointer, also opens with Shift+F10.",
+      "files": [
+        "ui/context-menu.tsx",
+        "lib/overlay.tsx"
+      ],
+      "registryDependencies": [
+        "dropdown-menu"
+      ]
+    },
+    "data-table": {
+      "description": "Table with sorting, search, row selection and pagination.",
+      "files": [
+        "ui/data-table.tsx"
+      ],
+      "registryDependencies": [
+        "checkbox",
+        "pagination"
+      ]
+    },
+    "date-picker": {
+      "description": "Trigger that opens the calendar in a popover. Single day or a range.",
+      "files": [
+        "ui/date-picker.tsx",
+        "lib/overlay.tsx"
+      ],
+      "registryDependencies": [
+        "calendar"
+      ]
+    },
+    "drawer": {
+      "description": "Bottom drawer for phones that follows your finger and dismisses on swipe down.",
+      "files": [
+        "ui/drawer.tsx",
+        "lib/overlay.tsx"
+      ]
+    },
+    "field": {
+      "description": "Form field wiring: label, control, description and error get ids and aria attributes automatically.",
+      "files": [
+        "ui/field.tsx"
+      ]
+    },
+    "hover-card": {
+      "description": "Rich preview card on hover or keyboard focus.",
+      "files": [
+        "ui/hover-card.tsx",
+        "lib/overlay.tsx"
+      ]
+    },
+    "input-group": {
+      "description": "Recessed field holding an input with icon, text and button addons.",
+      "files": [
+        "ui/input-group.tsx"
+      ]
+    },
+    "item": {
+      "description": "List row with media, title, description and actions.",
+      "files": [
+        "ui/item.tsx"
+      ]
+    },
+    "menubar": {
+      "description": "Desktop-app menu bar (File, Edit, View) with hover switching and arrow keys.",
+      "files": [
+        "ui/menubar.tsx",
+        "lib/overlay.tsx"
+      ],
+      "registryDependencies": [
+        "dropdown-menu"
+      ]
+    },
+    "native-select": {
+      "description": "A real <select> styled as a raised key; best on phones.",
+      "files": [
+        "ui/native-select.tsx"
+      ]
+    },
+    "navigation-menu": {
+      "description": "Site navigation with dropdown link panels (mega menu).",
+      "files": [
+        "ui/navigation-menu.tsx",
+        "lib/overlay.tsx"
+      ]
+    },
+    "resizable": {
+      "description": "Split panels with draggable, keyboard-accessible dividers.",
+      "files": [
+        "ui/resizable.tsx"
+      ]
+    },
+    "sidebar": {
+      "description": "App sidebar that collapses to icons (Ctrl/Cmd+B) and becomes an off-canvas panel on phones.",
+      "files": [
+        "ui/sidebar.tsx",
+        "lib/overlay.tsx"
       ]
     }
   }

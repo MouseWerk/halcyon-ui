@@ -11,6 +11,8 @@ import { catalog } from "./catalog"
 
 export const REPO = "https://github.com/mauricekleindienst/halcyon-ui"
 export const NPX = "npx github:mauricekleindienst/halcyon-ui"
+/** shadcn-compatible registry (built into /r on deploy). */
+export const SHADCN_REGISTRY = "https://mauricekleindienst.github.io/halcyon-ui/r"
 
 export function Logo({ className }: { className?: string }) {
   const [hover, setHover] = React.useState(false)

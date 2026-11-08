@@ -176,7 +176,7 @@ test("combobox filters and picks", async ({ page }) => {
 })
 
 test("calendar picks with mouse and keyboard, skips disabled days", async ({ page }) => {
-  const d = await openComponent(page, "calendar")
+  const d = (await openComponent(page, "calendar")).locator(":scope > div > div").first()
   const days = d.locator("button[aria-pressed]")
   // first enabled day of the current month
   const firstMonday = d.locator('button[aria-pressed]:not([aria-disabled])').filter({ hasText: /^1$/ }).first()

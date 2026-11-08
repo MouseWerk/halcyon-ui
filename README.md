@@ -15,7 +15,7 @@ Soft raised and inset surfaces, dot-matrix icons, a glow that shifts from amber 
 ![React](https://img.shields.io/badge/React-18%20%7C%2019-1c1d25?style=flat-square&labelColor=15161c)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v4-1c1d25?style=flat-square&labelColor=15161c)
 ![Next.js](https://img.shields.io/badge/Next.js-ready-1c1d25?style=flat-square&labelColor=15161c)
-![Components](https://img.shields.io/badge/components-61-8f8cff?style=flat-square&labelColor=15161c)
+![Components](https://img.shields.io/badge/components-80-8f8cff?style=flat-square&labelColor=15161c)
 ![License](https://img.shields.io/badge/license-MIT-ffa726?style=flat-square&labelColor=15161c)
 
 </div>
@@ -53,6 +53,26 @@ npx github:mauricekleindienst/halcyon-ui list
 
 Dependencies between components are resolved for you. Existing files are never overwritten unless you pass `--overwrite`.
 
+### Works with the shadcn CLI
+
+Every component is also a shadcn registry item, so it installs straight into an existing shadcn/ui project. The tokens are merged into your CSS automatically:
+
+```bash
+npx shadcn@latest add https://mauricekleindienst.github.io/halcyon-ui/r/sidebar.json
+```
+
+Or register the namespace once in `components.json` and use short names:
+
+```json
+{ "registries": { "@halcyon": "https://mauricekleindienst.github.io/halcyon-ui/r/{name}.json" } }
+```
+
+```bash
+npx shadcn@latest add @halcyon/knob @halcyon/data-table
+```
+
+shadcn already uses `muted` for a background colour, so in shadcn projects Halcyon's secondary text colour is `text-hc-muted`.
+
 ```tsx
 import { ThemeSwitch } from "@/components/ui/theme-switch"
 import { Stat } from "@/components/ui/stat"
@@ -71,17 +91,19 @@ export default function Page() {
 
 <img src=".github/assets/dashboard-dark.png" alt="Dashboard built with Halcyon UI" width="100%">
 
-**61 components**, no runtime dependencies besides React, `clsx` and `tailwind-merge`.
+**80 components**, no runtime dependencies besides React, `clsx` and `tailwind-merge`.
 
 | Group | Components |
 |---|---|
-| **Controls** | `theme-switch` `button` `switch` `segmented` `toggle` `toggle-group` `chip` `knob` `copy-button` |
-| **Forms** | `input` `textarea` `label` `checkbox` `radio-group` `slider` `select` `number-input` `otp-input` `password-input` `combobox` `calendar` `file-drop` `rating` |
-| **Surfaces** | `card` `accordion` `scroll-area` `separator` `avatar` `avatar-group` `dot-icon` `empty-state` |
-| **Overlays** | `dialog` `sheet` `popover` `tooltip` `dropdown-menu` `command` |
-| **Data** | `stat` `dot-chart` `sparkline` `counter` `table` `heatmap` `bar-list` `timeline` `progress-ring` |
+| **Controls** | `theme-switch` `button` `button-group` `switch` `segmented` `toggle` `toggle-group` `chip` `knob` `copy-button` |
+| **Forms** | `field` `input` `input-group` `textarea` `label` `checkbox` `radio-group` `slider` `select` `native-select` `combobox` `number-input` `otp-input` `password-input` `calendar` `date-picker` `file-drop` `rating` |
+| **Surfaces** | `card` `item` `accordion` `collapsible` `carousel` `resizable` `aspect-ratio` `scroll-area` `separator` `avatar` `avatar-group` `dot-icon` `empty-state` |
+| **Overlays** | `dialog` `alert-dialog` `sheet` `drawer` `popover` `hover-card` `tooltip` `dropdown-menu` `context-menu` `command` |
+| **Data** | `chart` `data-table` `table` `stat` `dot-chart` `sparkline` `counter` `heatmap` `bar-list` `timeline` `progress-ring` |
 | **Feedback** | `toast` `alert` `badge` `status-lamp` `meter` `progress` `skeleton` `spinner` `error-boundary` |
-| **Navigation** | `nav` `tabs` `breadcrumb` `pagination` `steps` `kbd` |
+| **Navigation** | `sidebar` `navigation-menu` `menubar` `nav` `tabs` `breadcrumb` `pagination` `steps` `kbd` |
+
+Everything shadcn/ui ships has a Halcyon counterpart, from Alert Dialog to Sidebar (Form is covered by `field`, which works with any form library; Sonner by `toast`).
 
 <details>
 <summary><b>All components with descriptions</b></summary>
@@ -149,6 +171,25 @@ export default function Page() {
 | `progress-ring` | Circular dot progress around a recessed dial. |
 | `progress` | Linear dot progress, determinate or an indeterminate comet. |
 | `steps` | Step indicator for multi-step flows, horizontal or vertical. |
+| `alert-dialog` | Confirmation that ignores backdrop clicks, focuses Cancel and waits for async actions. |
+| `aspect-ratio` | Keeps media at a fixed ratio, optionally framed. |
+| `button-group` | Joins buttons into one raised strip with engraved separators. |
+| `carousel` | Scroll-snap carousel: swipe, arrows, dots, keyboard, autoplay. |
+| `chart` | Area, line, bar and donut charts in plain SVG with tooltips and colour-blind-safe slots. |
+| `collapsible` | Show/hide a section with animated height. |
+| `context-menu` | Right-click / long-press / Shift+F10 menu at the pointer. |
+| `data-table` | Sorting, search, row selection and pagination. |
+| `date-picker` | Calendar in a popover, single day or range. |
+| `drawer` | Bottom drawer that follows your finger and dismisses on swipe. |
+| `field` | Label, control, description and error wired with ids and aria attributes. |
+| `hover-card` | Rich preview on hover or focus. |
+| `input-group` | Input with icon, text and button addons in one well. |
+| `item` | List row with media, title, description and actions. |
+| `menubar` | Desktop-app menu bar with hover switching and arrow keys. |
+| `native-select` | A real `<select>` styled as a raised key. |
+| `navigation-menu` | Site navigation with dropdown link panels. |
+| `resizable` | Split panels with draggable, keyboard-accessible dividers. |
+| `sidebar` | App sidebar: icon rail on desktop (Ctrl/Cmd+B), off-canvas on phones. |
 
 </details>
 
