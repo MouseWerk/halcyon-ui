@@ -51,9 +51,16 @@ test("theme switch flips the theme and remembers it", async ({ page }) => {
   await page.goto("./#/")
   const sw = page.getByRole("switch", { name: "Dark mode" }).first()
   const was = await sw.getAttribute("aria-checked")
+  // diagnostics: did the click arrive, and did anything change the theme back?
+  await page.evaluate(() => {
+    const w = window as unknown as { __log: string[] }
+    w.__log = []
+    document.addEventListener("click", (e) => w.__log.push(`click ${(e.target as Element).tagName}.${String((e.target as Element).className).slice(0, 30)}`), true)
+    new MutationObserver(() => w.__log.push(`theme=${document.documentElement.dataset.theme}`)).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] })
+  })
   await sw.click()
   const want = was === "true" ? "light" : "dark"
-  const state = () => page.evaluate(() => ({ theme: document.documentElement.dataset.theme, stored: localStorage.getItem("hc-theme"), visibility: document.visibilityState, vt: "startViewTransition" in document }))
+  const state = () => page.evaluate(() => ({ theme: document.documentElement.dataset.theme, stored: localStorage.getItem("hc-theme"), visibility: document.visibilityState, vt: "startViewTransition" in document, log: (window as unknown as { __log?: string[] }).__log }))
   await expect.poll(async () => (await state()).theme, { message: "theme after click" }).toBe(want).catch(async (e) => {
     throw new Error(`${e.message}\nstate: ${JSON.stringify(await state())}`)
   })
