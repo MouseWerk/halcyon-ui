@@ -165,10 +165,15 @@ export interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLB
   /** Accessible name and hover hint when collapsed to icons. */
   tooltip?: string
   href?: string
+  /**
+   * Component used to render `href` rows, e.g. Next.js `Link` for client-side
+   * navigation. Defaults to a plain `<a>`.
+   */
+  linkAs?: React.ElementType
 }
 
 /** Menu row. Active rows rise out of the rail and light their LED; collapsed rows show only the icon. */
-export function SidebarMenuButton({ icon, active, badge, tooltip, href, className, children, onClick, ...props }: SidebarMenuButtonProps) {
+export function SidebarMenuButton({ icon, active, badge, tooltip, href, linkAs: LinkComp = "a", className, children, onClick, ...props }: SidebarMenuButtonProps) {
   const { isMobile, setOpenMobile, open } = useSidebar()
   const collapsed = !isMobile && !open
   const cls = cn(
@@ -198,7 +203,7 @@ export function SidebarMenuButton({ icon, active, badge, tooltip, href, classNam
   return (
     <li>
       {href ? (
-        <a href={href} {...common} onClick={after}>{body}</a>
+        <LinkComp href={href} {...common} onClick={after}>{body}</LinkComp>
       ) : (
         <button type="button" {...common} onClick={(e) => { onClick?.(e); after() }} {...props}>{body}</button>
       )}

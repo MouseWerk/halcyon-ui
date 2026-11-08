@@ -37,9 +37,20 @@ export interface DataTableProps<T> {
   toolbar?: React.ReactNode
   empty?: React.ReactNode
   initialSort?: { key: string; dir: "asc" | "desc" }
+  /** UI strings, for translation. */
+  labels?: Partial<DataTableLabels>
   className?: string
   "aria-label"?: string
 }
+
+export interface DataTableLabels {
+  of: string
+  rows: string
+  selectPage: string
+  selectRow: string
+  table: string
+}
+const DEFAULT_LABELS: DataTableLabels = { of: "of", rows: "rows", selectPage: "Select page", selectRow: "Select row", table: "Data table" }
 
 type Sort = { key: string; dir: "asc" | "desc" } | null
 
@@ -49,8 +60,9 @@ type Sort = { key: string; dir: "asc" | "desc" } | null
  */
 export function DataTable<T>({
   data, columns, rowId = (_, i) => String(i), searchable = true, searchPlaceholder = "Search", pageSize = 10,
-  selectable, onSelectionChange, onRowClick, toolbar, empty = "No results.", initialSort, className, ...aria
+  selectable, onSelectionChange, onRowClick, toolbar, empty = "No results.", initialSort, labels: labelsProp, className, ...aria
 }: DataTableProps<T>) {
+  const L = { ...DEFAULT_LABELS, ...labelsProp }
   const [q, setQ] = React.useState("")
   const [sort, setSort] = React.useState<Sort>(initialSort ?? null)
   const [page, setPage] = React.useState(1)
@@ -111,13 +123,13 @@ export function DataTable<T>({
           {selectable && selected.size > 0 && <span className="font-mono text-xs text-muted" aria-live="polite">{selected.size} selected</span>}
         </div>
       )}
-      <div tabIndex={0} role="region" aria-label={aria["aria-label"] ?? "Data table"} className="-mx-1.5 overflow-x-auto rounded-xl outline-offset-2">
+      <div tabIndex={0} role="region" aria-label={aria["aria-label"] ?? L.table} className="-mx-1.5 overflow-x-auto rounded-xl outline-offset-2">
         <table className="w-full border-separate border-spacing-x-0 border-spacing-y-1.5 px-1.5 text-[13.5px]">
           <thead>
             <tr>
               {selectable && (
                 <th className="w-10 px-3 py-1">
-                  <Checkbox aria-label="Select page" checked={allOnPage ? true : someOnPage ? "indeterminate" : false}
+                  <Checkbox aria-label={L.selectPage} checked={allOnPage ? true : someOnPage ? "indeterminate" : false}
                     onCheckedChange={() => { const n = new Set(selected); visible.forEach((r) => (allOnPage ? n.delete(r.id) : n.add(r.id))); update(n) }} />
                 </th>
               )}
@@ -158,7 +170,7 @@ export function DataTable<T>({
                 >
                   {selectable && (
                     <td className={cn("rounded-l-xl px-3 py-[11px] transition-colors duration-300", on ? "bg-raise" : "bg-bg group-hover:bg-raise")} onClick={(e) => e.stopPropagation()}>
-                      <Checkbox aria-label="Select row" checked={on} onCheckedChange={() => { const n = new Set(selected); if (on) n.delete(id); else n.add(id); update(n) }} />
+                      <Checkbox aria-label={L.selectRow} checked={on} onCheckedChange={() => { const n = new Set(selected); if (on) n.delete(id); else n.add(id); update(n) }} />
                     </td>
                   )}
                   {columns.map((c, ci) => (
@@ -187,7 +199,7 @@ export function DataTable<T>({
       {pageSize > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <span className="font-mono text-xs text-muted">
-            {rows.length ? `${(p - 1) * pageSize + 1}–${Math.min(p * pageSize, rows.length)} of ${rows.length}` : "0 rows"}
+            {rows.length ? `${(p - 1) * pageSize + 1}–${Math.min(p * pageSize, rows.length)} ${L.of} ${rows.length}` : `0 ${L.rows}`}
           </span>
           {pages > 1 && <Pagination page={p} pageCount={pages} onPageChange={setPage} siblings={0} />}
         </div>
