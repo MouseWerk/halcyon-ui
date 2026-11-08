@@ -27,21 +27,26 @@ const tones = ["bg-dot-off", "bg-bad text-bad", "bg-warn text-warn", "bg-ok text
 export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
   ({ strength = false, score = passwordScore, className, onChange, value, defaultValue, ...props }, ref) => {
     const [show, setShow] = React.useState(false)
+    // The wrapper is a div, not a label element: a label around the field and
+    // the reveal button would merge both into the field's accessible name.
+    const input = React.useRef<HTMLInputElement>(null)
+    React.useImperativeHandle(ref, () => input.current as HTMLInputElement)
     const [inner, setInner] = React.useState(String(defaultValue ?? ""))
     const current = value !== undefined ? String(value) : inner
     const s = strength ? score(current) : 0
     return (
       <div className={cn("flex flex-col gap-2", className)}>
-        <label
+        <div
+          onMouseDown={(e) => { if (!(e.target as Element).closest("button, input")) { e.preventDefault(); input.current?.focus() } }}
           className={cn(
-            "flex h-11 items-center gap-2 rounded-[13px] bg-bg pl-3.5 pr-1.5 text-muted shadow-inset",
+            "flex h-11 cursor-text items-center gap-2 rounded-[13px] bg-bg pl-3.5 pr-1.5 text-muted shadow-inset",
             "transition-[box-shadow] duration-300 ease-out-soft",
             "focus-within:shadow-[inset_3px_3px_7px_var(--hc-sh-dark),inset_-3px_-3px_7px_var(--hc-sh-light),0_0_0_1.5px_var(--hc-glow-soft)]",
           )}
         >
           <svg viewBox="0 0 24 24" className="size-4 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="10" width="16" height="11" rx="2.5" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
           <input
-            ref={ref}
+            ref={input}
             type={show ? "text" : "password"}
             value={value}
             defaultValue={defaultValue}
@@ -67,7 +72,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
               {!show && <path d="M3 3l18 18" />}
             </svg>
           </button>
-        </label>
+        </div>
         {strength && (
           <div className="flex items-center gap-2.5 px-1" aria-live="polite">
             <div className="flex flex-1 gap-1.5">
