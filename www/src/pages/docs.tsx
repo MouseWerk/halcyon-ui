@@ -83,7 +83,7 @@ function SidebarContent({ route, onNavigate }: { route: string; onNavigate?: () 
                 <div className="flex items-center gap-2 px-2 pb-1.5 pt-1">
                   <DotIcon icon={groupGlyph[s.title] ?? "diamond"} size={13} glow={hasActive ? 0.6 : 0} className={cn("transition-opacity", !hasActive && "opacity-50")} />
                   <span className="font-mono text-[10px] uppercase tracking-[.16em] text-muted">{s.title}</span>
-                  <span className="ml-auto font-mono text-[10px] text-muted/70">{s.items.length}</span>
+                  <span className="ml-auto font-mono text-[10px] text-muted">{s.items.length}</span>
                 </div>
                 <div className="flex flex-col gap-0.5">
                   {s.items.map((i) => {
@@ -473,7 +473,7 @@ function ComponentPage({ name }: { name: string }) {
         <Segmented value={tab} onValueChange={setTab} options={[{ value: "preview", label: "Preview" }, { value: "code", label: "Code" }]} />
       </div>
       {tab === "preview" ? (
-        <div className="dot-field relative flex min-h-[340px] items-center justify-center overflow-hidden rounded-[24px] bg-bg p-8 shadow-inset">
+        <div data-demo={d.name} className="dot-field relative flex min-h-[340px] items-center justify-center overflow-hidden rounded-[24px] bg-bg p-4 shadow-inset sm:p-8">
           <ErrorBoundary resetKeys={[name]}><d.Demo key={name} /></ErrorBoundary>
         </div>
       ) : (

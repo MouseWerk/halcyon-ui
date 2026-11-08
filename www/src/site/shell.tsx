@@ -7,7 +7,7 @@ import { href } from "../router"
 import { IconGithub, IconMenu, IconSearch } from "./icons"
 import { Sheet } from "@/components/ui/sheet"
 import { CommandPalette } from "@/components/ui/command"
-import { demos } from "./demos"
+import { catalog } from "./catalog"
 
 export const REPO = "https://github.com/mauricekleindienst/halcyon-ui"
 export const NPX = "npx github:mauricekleindienst/halcyon-ui"
@@ -85,7 +85,7 @@ export function Header({ route }: { route: string }) {
               ...[["Introduction", "/docs"], ["Installation", "/docs/installation"], ["Frameworks", "/docs/frameworks"], ["Theming", "/docs/theming"], ["CLI", "/docs/cli"], ["Dashboard example", "/examples/dashboard"]].map(([l, to]) => ({
                 id: to, label: l, group: "Guides", onSelect: () => { location.hash = to },
               })),
-              ...demos.map((d) => ({ id: d.name, label: d.title, group: d.group, keywords: [d.name], onSelect: () => { location.hash = `/docs/components/${d.name}` } })),
+              ...catalog.map((d) => ({ id: d.name, label: d.title, group: d.group, keywords: [d.name], onSelect: () => { location.hash = `/docs/components/${d.name}` } })),
             ]}
           />
           <a href={REPO} target="_blank" rel="noreferrer" aria-label="GitHub" className="max-md:hidden grid size-10 place-items-center rounded-[13px] bg-surface text-ink shadow-key transition-transform duration-200 ease-spring active:scale-95 [&_svg]:size-[18px]">

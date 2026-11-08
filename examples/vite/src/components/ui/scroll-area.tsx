@@ -55,6 +55,7 @@ export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
     return (
       <div
         ref={ref}
+        tabIndex={0}
         onScroll={(e) => { measure(); onScroll?.(e) }}
         className={cn(
           "relative overscroll-contain",

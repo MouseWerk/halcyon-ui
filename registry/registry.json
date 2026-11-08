@@ -286,6 +286,133 @@
       "files": [
         "ui/error-boundary.tsx"
       ]
+    },
+    "toggle": {
+      "description": "A key that stays down: sinks, glows and lights a corner LED when pressed.",
+      "files": [
+        "ui/toggle.tsx"
+      ]
+    },
+    "toggle-group": {
+      "description": "Keys in a recessed rail, single or multiple selection, arrow-key navigation.",
+      "files": [
+        "ui/toggle-group.tsx"
+      ]
+    },
+    "chip": {
+      "description": "Compact filter or tag pill. Selectable (sinks, dot lights up) and removable.",
+      "files": [
+        "ui/chip.tsx"
+      ]
+    },
+    "knob": {
+      "description": "Rotary dial with a lit dot ring. Drag, scroll or use the arrow keys.",
+      "files": [
+        "ui/knob.tsx"
+      ]
+    },
+    "copy-button": {
+      "description": "Copies to the clipboard; the icon swaps to a check that draws itself in.",
+      "files": [
+        "ui/copy-button.tsx"
+      ]
+    },
+    "number-input": {
+      "description": "Stepper with a dot-matrix value between two keys. Hold to repeat, type, or use arrows.",
+      "files": [
+        "ui/number-input.tsx"
+      ]
+    },
+    "otp-input": {
+      "description": "One-time code wells with auto-advance, paste and SMS autofill.",
+      "files": [
+        "ui/otp-input.tsx"
+      ]
+    },
+    "password-input": {
+      "description": "Password field with a reveal key and a dot strength meter.",
+      "files": [
+        "ui/password-input.tsx"
+      ]
+    },
+    "combobox": {
+      "description": "Searchable select with match highlighting and full keyboard control.",
+      "files": [
+        "ui/combobox.tsx",
+        "lib/overlay.tsx"
+      ]
+    },
+    "calendar": {
+      "description": "Month grid date picker with native-style keyboard navigation.",
+      "files": [
+        "ui/calendar.tsx"
+      ]
+    },
+    "file-drop": {
+      "description": "Drop zone with a dot border that lights up and lifts while dragging.",
+      "files": [
+        "ui/file-drop.tsx"
+      ]
+    },
+    "rating": {
+      "description": "Rating built from dot-matrix stars. Hover preview, keyboard support.",
+      "files": [
+        "ui/rating.tsx"
+      ]
+    },
+    "avatar-group": {
+      "description": "Overlapping avatars that lift on hover, with a +N chip.",
+      "files": [
+        "ui/avatar-group.tsx"
+      ],
+      "registryDependencies": [
+        "avatar"
+      ]
+    },
+    "empty-state": {
+      "description": "Empty list placeholder: dot glyph in a well, text and an action.",
+      "files": [
+        "ui/empty-state.tsx"
+      ],
+      "registryDependencies": [
+        "dot-icon"
+      ]
+    },
+    "heatmap": {
+      "description": "Dot-matrix heatmap (e.g. a year of activity). Dot size and glow follow the value.",
+      "files": [
+        "ui/heatmap.tsx"
+      ]
+    },
+    "bar-list": {
+      "description": "Ranked list with dot bars that grow in, for top pages or referrers.",
+      "files": [
+        "ui/bar-list.tsx"
+      ]
+    },
+    "timeline": {
+      "description": "Activity feed on a dotted rail with status LEDs.",
+      "files": [
+        "ui/timeline.tsx"
+      ]
+    },
+    "progress-ring": {
+      "description": "Circular dot progress around a recessed dial.",
+      "files": [
+        "ui/progress-ring.tsx"
+      ]
+    },
+    "progress": {
+      "description": "Linear dot progress, determinate or an indeterminate comet.",
+      "files": [
+        "ui/progress.tsx"
+      ]
+    },
+    "steps": {
+      "description": "Step indicator for multi-step flows, horizontal or vertical.",
+      "files": [
+        "ui/steps.tsx"
+      ]
     }
   }
 }

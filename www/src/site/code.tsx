@@ -52,7 +52,9 @@ export function Code({ code, className, maxHeight }: { code: string; className?:
     <div className={cn("code-block relative rounded-2xl bg-bg shadow-inset", className)}>
       <CopyButton text={code} className="absolute right-3 top-3 z-10" />
       <pre
-        className="overflow-auto p-5 pr-14 max-sm:pt-12 font-mono text-[12.5px] leading-relaxed text-ink/85"
+        tabIndex={0}
+        aria-label="Code"
+        className="overflow-auto rounded-2xl p-5 pr-14 max-sm:pt-12 font-mono text-[12.5px] leading-relaxed text-ink/85"
         style={{ maxHeight }}
       >
         <code>{highlight(code.trim())}</code>

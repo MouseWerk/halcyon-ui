@@ -1,0 +1,39 @@
+name: E2E
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: www/package-lock.json
+      - run: npm ci
+        working-directory: www
+      - run: npm run typecheck
+        working-directory: www
+      - run: npx playwright install --with-deps chromium firefox webkit
+        working-directory: www
+      - run: npm run e2e
+        working-directory: www
+        env:
+          CI: "1"
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: www/playwright-report
+          retention-days: 7

@@ -15,7 +15,7 @@ Soft raised and inset surfaces, dot-matrix icons, a glow that shifts from amber 
 ![React](https://img.shields.io/badge/React-18%20%7C%2019-1c1d25?style=flat-square&labelColor=15161c)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v4-1c1d25?style=flat-square&labelColor=15161c)
 ![Next.js](https://img.shields.io/badge/Next.js-ready-1c1d25?style=flat-square&labelColor=15161c)
-![Components](https://img.shields.io/badge/components-41-8f8cff?style=flat-square&labelColor=15161c)
+![Components](https://img.shields.io/badge/components-61-8f8cff?style=flat-square&labelColor=15161c)
 ![License](https://img.shields.io/badge/license-MIT-ffa726?style=flat-square&labelColor=15161c)
 
 </div>
@@ -71,17 +71,17 @@ export default function Page() {
 
 <img src=".github/assets/dashboard-dark.png" alt="Dashboard built with Halcyon UI" width="100%">
 
-**41 components**, no runtime dependencies besides React, `clsx` and `tailwind-merge`.
+**61 components**, no runtime dependencies besides React, `clsx` and `tailwind-merge`.
 
 | Group | Components |
 |---|---|
-| **Controls** | `theme-switch` `button` `switch` `segmented` |
-| **Forms** | `input` `textarea` `label` `checkbox` `radio-group` `slider` `select` |
-| **Surfaces** | `card` `accordion` `scroll-area` `separator` `avatar` `dot-icon` |
+| **Controls** | `theme-switch` `button` `switch` `segmented` `toggle` `toggle-group` `chip` `knob` `copy-button` |
+| **Forms** | `input` `textarea` `label` `checkbox` `radio-group` `slider` `select` `number-input` `otp-input` `password-input` `combobox` `calendar` `file-drop` `rating` |
+| **Surfaces** | `card` `accordion` `scroll-area` `separator` `avatar` `avatar-group` `dot-icon` `empty-state` |
 | **Overlays** | `dialog` `sheet` `popover` `tooltip` `dropdown-menu` `command` |
-| **Data** | `stat` `dot-chart` `sparkline` `counter` `table` |
-| **Feedback** | `toast` `alert` `badge` `status-lamp` `meter` `skeleton` `spinner` `error-boundary` |
-| **Navigation** | `nav` `tabs` `breadcrumb` `pagination` `kbd` |
+| **Data** | `stat` `dot-chart` `sparkline` `counter` `table` `heatmap` `bar-list` `timeline` `progress-ring` |
+| **Feedback** | `toast` `alert` `badge` `status-lamp` `meter` `progress` `skeleton` `spinner` `error-boundary` |
+| **Navigation** | `nav` `tabs` `breadcrumb` `pagination` `steps` `kbd` |
 
 <details>
 <summary><b>All components with descriptions</b></summary>
@@ -129,6 +129,26 @@ export default function Page() {
 | `breadcrumb` | Monospace path with a raised current-page chip. |
 | `pagination` | Page keys in a recessed rail. |
 | `kbd` | Tiny raised keycap. |
+| `toggle` | A key that stays down: sinks, glows and lights a corner LED when pressed. |
+| `toggle-group` | Keys in a recessed rail, single or multiple selection, arrow-key navigation. |
+| `chip` | Filter or tag pill. Selectable (sinks, dot lights up) and removable. |
+| `knob` | Rotary dial with a lit dot ring. Drag, scroll or use the arrow keys. |
+| `copy-button` | Copies to the clipboard; the icon swaps to a check that draws itself in. |
+| `number-input` | Stepper with a dot-matrix value. Hold a key to repeat, type, or use arrows. |
+| `otp-input` | One-time code wells with auto-advance, paste and SMS autofill. |
+| `password-input` | Password field with a reveal key and a dot strength meter. |
+| `combobox` | Searchable select with match highlighting and full keyboard control. |
+| `calendar` | Month grid date picker with native-style keyboard navigation. |
+| `file-drop` | Drop zone whose dotted border lights up and lifts while dragging. |
+| `rating` | Stars drawn from dots. Hover preview, keyboard support, read-only mode. |
+| `avatar-group` | Overlapping avatars that lift on hover, with a +N chip. |
+| `empty-state` | Empty list placeholder: dot glyph in a well, text and an action. |
+| `heatmap` | Dot-matrix heatmap, e.g. a year of activity. |
+| `bar-list` | Ranked list with dot bars that grow in. |
+| `timeline` | Activity feed on a dotted rail with status LEDs. |
+| `progress-ring` | Circular dot progress around a recessed dial. |
+| `progress` | Linear dot progress, determinate or an indeterminate comet. |
+| `steps` | Step indicator for multi-step flows, horizontal or vertical. |
 
 </details>
 
@@ -193,7 +213,7 @@ Dark mode is a `dark` class or `data-theme="dark"` on `<html>`. `useTheme()` han
 
 ## Accessibility
 
-Keyboard support follows the WAI-ARIA patterns: arrow keys in tabs, radio groups, menus, selects and the command palette; Home and End where it applies; Escape closes overlays; focus is trapped in modals and restored on close. Every animation turns off under `prefers-reduced-motion`.
+Keyboard support follows the WAI-ARIA patterns: arrow keys in tabs, radio groups, menus, selects and the command palette; Home and End where it applies; Escape closes overlays; focus is trapped in modals and restored on close. Every animation turns off under `prefers-reduced-motion`. Text colors meet WCAG AA contrast (4.5:1) on every surface in both themes, and every page is scanned with axe in CI.
 
 ## Develop
 
@@ -204,6 +224,7 @@ npm install
 npm run dev        # docs site on http://localhost:5173
 npm run typecheck
 npm run build
+npm run e2e        # Playwright: every page and component, desktop / tablet / phone, light and dark
 ```
 
 ```
@@ -213,7 +234,9 @@ www/            documentation and marketing site (Vite + React)
 examples/       Next.js and Vite apps set up with the CLI
 ```
 
-To add a component: put it in `registry/ui/`, list it in `registry/registry.json`, and add a demo in `www/src/site/`.
+To add a component: put it in `registry/ui/`, list it in `registry/registry.json`, add a demo in `www/src/site/` and an entry in `www/src/site/catalog.ts` (the e2e suite checks they match).
+
+The end-to-end suite lives in `www/e2e/`. Locally the phone and tablet projects emulate their devices on Chromium; in CI they also run on Firefox and WebKit (Safari).
 
 ## License
 

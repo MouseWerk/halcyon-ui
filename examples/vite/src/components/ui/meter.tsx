@@ -21,6 +21,7 @@ export function Meter({ value, max = 100, segments = 20, tone = "glow", classNam
       aria-valuemin={0}
       aria-valuemax={max}
       aria-valuenow={value}
+      aria-label={props["aria-label"] ?? "Meter"}
       className={cn("flex h-4 items-center gap-[3px] rounded-full bg-bg px-[5px] shadow-inset-sm", className)}
       {...props}
     >

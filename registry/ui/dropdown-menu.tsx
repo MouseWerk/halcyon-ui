@@ -34,8 +34,7 @@ export function DropdownMenu({ trigger, items, align = "start", className }: Dro
     if (open) {
       wasOpen.current = true
       setActive(selectable[0] ?? -1)
-      const r = requestAnimationFrame(() => menu.current?.focus({ preventScroll: true }))
-      return () => cancelAnimationFrame(r)
+      return
     }
     // Give focus back to the trigger, unless the user already moved it elsewhere.
     if (wasOpen.current) {
@@ -45,6 +44,11 @@ export function DropdownMenu({ trigger, items, align = "start", className }: Dro
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
+
+  // Focus the menu once it is actually in the DOM (it mounts a frame after `open`).
+  React.useEffect(() => {
+    if (open && mounted) menu.current?.focus({ preventScroll: true })
+  }, [open, mounted])
 
   const run = (i: number) => {
     const it = items[i]

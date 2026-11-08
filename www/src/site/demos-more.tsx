@@ -384,6 +384,10 @@ export const moreDemos: DemoEntry[] = [
               <Checkbox label="Pending" defaultChecked />
               <Checkbox label="Failed" />
               <Separator />
+              <div className="flex flex-col gap-2">
+                <Label>Plan</Label>
+                <Select aria-label="Plan" defaultValue="all" options={[{ value: "all", label: "All plans" }, { value: "starter", label: "Starter" }, { value: "pro", label: "Pro" }, { value: "enterprise", label: "Enterprise" }]} />
+              </div>
               <div className="flex items-center justify-between text-sm"><span>Only enterprise</span><Switch aria-label="Only enterprise" /></div>
             </div>
           </Sheet>

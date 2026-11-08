@@ -74,7 +74,7 @@ export function DotChart({
   }
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" className={cn("block h-auto w-full min-w-[520px]", className)} {...props}>
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Chart: ${labels.map((l, i) => `${l} ${format(values[i])}`).join(", ")}`} className={cn("block h-auto w-full min-w-[520px]", className)} {...props}>
       {Array.from({ length: Math.floor(rows / tickEvery) + 1 }, (_, i) => i * tickEvery).map((g) => (
         <text key={g} x={padL - 8} y={H - padB - g * rh + 3} textAnchor="end" className="fill-muted font-mono text-[11px]">
           {format(g * unit)}
