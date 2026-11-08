@@ -43,12 +43,11 @@ export function ContextMenu({ items, children, disabled, onOpenChange }: Context
     })
   }, [mounted, at])
 
+  // The menu is fixed where it opened, so scrolling is harmless; a resize can push it off-screen.
   React.useEffect(() => {
     if (!open) return
-    const onScroll = () => close()
-    window.addEventListener("scroll", onScroll, true)
-    window.addEventListener("resize", onScroll)
-    return () => { window.removeEventListener("scroll", onScroll, true); window.removeEventListener("resize", onScroll) }
+    window.addEventListener("resize", close)
+    return () => window.removeEventListener("resize", close)
   }, [open, close])
 
   const child = children.props
