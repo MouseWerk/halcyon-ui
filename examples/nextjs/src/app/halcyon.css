@@ -201,7 +201,7 @@
 }
 
 /* Keyframes used through arbitrary animate-[...] classes. */
-@keyframes hc-shimmer { to { transform: translateX(100%); } }
+@keyframes hc-shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
 @keyframes hc-orbit { 0% { opacity: 1; scale: 1; } 100% { opacity: 0.12; scale: 0.6; } }
 
 /* Circular theme reveal used by <ThemeSwitch /> (View Transitions API). */

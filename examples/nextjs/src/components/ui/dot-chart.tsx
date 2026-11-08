@@ -58,9 +58,11 @@ export function DotChart({
             key={`${c}-${row}-${k}`}
             cx={x0 + k * (r * 2 + gap)}
             cy={cy}
-            r={on && !shown ? 0 : r}
+            r={r}
             className={cn(
-              "transition-[r,fill] duration-[450ms] ease-spring",
+              // scale (not the r attribute) so the pop animates in every engine, Safari included
+              "origin-center transition-[scale,fill] duration-[450ms] ease-spring [transform-box:fill-box]",
+              on && !shown ? "scale-0" : "scale-100",
               on ? "fill-glow" : "fill-dot-off",
               isPeak && "drop-shadow-[0_0_3px_var(--hc-glow)]",
             )}

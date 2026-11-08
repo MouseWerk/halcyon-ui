@@ -37,7 +37,7 @@ export function CopyButton({ text, className }: { text: string; className?: stri
         }).catch(() => {})
       }}
       className={cn(
-        "grid size-8 cursor-pointer place-items-center rounded-[10px] bg-surface text-muted shadow-key transition-[transform,box-shadow,color] duration-200 ease-spring hover:text-ink active:scale-95 active:shadow-inset-sm [&_svg]:size-3.5",
+        "grid size-8 cursor-pointer place-items-center rounded-[10px] bg-surface text-muted shadow-key transition-[scale,box-shadow,color] duration-200 ease-spring hover:text-ink active:scale-95 active:shadow-inset-sm [&_svg]:size-3.5",
         done && "text-ok",
         className,
       )}

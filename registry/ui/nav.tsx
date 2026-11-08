@@ -21,7 +21,7 @@ export function NavItem({ icon, active, count, className, children, ...props }: 
       aria-current={active ? "page" : undefined}
       className={cn(
         "flex w-full cursor-pointer items-center gap-2.5 rounded-[11px] px-2.5 py-[9px] text-left font-medium",
-        "transition-[color,background-color,box-shadow,transform] duration-300 ease-out-soft active:scale-[.97]",
+        "transition-[color,background-color,box-shadow,scale] duration-300 ease-out-soft active:scale-[.97]",
         "[&_svg]:size-[17px] [&_svg]:shrink-0",
         active ? "bg-raise text-ink shadow-raised-sm" : "text-muted hover:text-ink",
         className,

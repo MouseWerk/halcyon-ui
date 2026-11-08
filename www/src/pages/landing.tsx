@@ -142,7 +142,7 @@ function SpringTile() {
       <button
         type="button"
         onClick={() => setN(n + 1)}
-        className="grid size-20 cursor-pointer place-items-center rounded-[22px] bg-surface shadow-key transition-[transform,box-shadow] duration-300 ease-spring active:scale-[.86] active:shadow-inset"
+        className="grid size-20 cursor-pointer place-items-center rounded-[22px] bg-surface shadow-key transition-[scale,box-shadow] duration-300 ease-spring active:scale-[.86] active:shadow-inset"
       >
         <Counter value={n} duration={400} className="text-3xl" />
       </button>

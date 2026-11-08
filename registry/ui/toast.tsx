@@ -21,15 +21,17 @@ export function Toaster({ duration = 2400, className }: { duration?: number; cla
   const [items, setItems] = React.useState<(ToastItem & { shown: boolean })[]>([])
 
   React.useEffect(() => {
+    const timers = new Set<ReturnType<typeof setTimeout>>()
+    const later = (cb: () => void, ms: number) => { const id = setTimeout(() => { timers.delete(id); cb() }, ms); timers.add(id) }
     const fn = (t: ToastItem) => {
       setItems((xs) => [...xs.slice(-2), { ...t, shown: false }])
-      requestAnimationFrame(() => requestAnimationFrame(() =>
-        setItems((xs) => xs.map((x) => (x.id === t.id ? { ...x, shown: true } : x)))))
-      setTimeout(() => setItems((xs) => xs.map((x) => (x.id === t.id ? { ...x, shown: false } : x))), duration)
-      setTimeout(() => setItems((xs) => xs.filter((x) => x.id !== t.id)), duration + 600)
+      // two frames so the hidden state paints first and the spring-in transition runs
+      later(() => setItems((xs) => xs.map((x) => (x.id === t.id ? { ...x, shown: true } : x))), 32)
+      later(() => setItems((xs) => xs.map((x) => (x.id === t.id ? { ...x, shown: false } : x))), duration)
+      later(() => setItems((xs) => xs.filter((x) => x.id !== t.id)), duration + 600)
     }
     subs.add(fn)
-    return () => { subs.delete(fn) }
+    return () => { subs.delete(fn); timers.forEach(clearTimeout) }
   }, [duration])
 
   return (
@@ -47,7 +49,7 @@ export function Toaster({ duration = 2400, className }: { duration?: number; cla
           key={t.id}
           className={cn(
             "pointer-events-auto flex items-center gap-2.5 rounded-[14px] bg-surface px-4 py-[11px] text-[13px] shadow-raised",
-            "transition-[transform,opacity] duration-[550ms] ease-spring",
+            "transition-[translate,opacity] duration-[550ms] ease-spring",
             t.shown ? "translate-y-0 opacity-100" : "translate-y-[140%] opacity-0",
           )}
         >

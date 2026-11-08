@@ -32,7 +32,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       type={type}
       className={cn(
         "relative inline-flex select-none items-center justify-center whitespace-nowrap font-medium",
-        "cursor-pointer transition-[transform,box-shadow,background-color,color] duration-200 ease-spring",
+        "cursor-pointer transition-[translate,scale,box-shadow,background-color,color] duration-200 ease-spring",
         "active:translate-y-px active:scale-[.97] disabled:pointer-events-none disabled:opacity-50",
         variants[variant],
         sizes[size],
