@@ -34,8 +34,11 @@ export function ThemeSwitch({ reveal = true, size = "md", className, style, ...p
     const next = dark ? "light" : "dark"
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     const doc = document as Document & { startViewTransition?: (cb: () => Promise<void> | void) => { ready: Promise<void>; finished?: Promise<void> } }
+    // WebKit can stall on startViewTransition here (the click lands but the update never runs,
+    // seen in CI on desktop and iPad WebKit), so Safari gets the instant swap instead of the reveal.
+    const webkit = /AppleWebKit/.test(navigator.userAgent) && !/Chrome|Chromium|Edg|Firefox|FxiOS|CriOS/.test(navigator.userAgent)
     // No reveal when it can't be seen (background tab, headless) or isn't wanted.
-    if (!reveal || reduced || !doc.startViewTransition || !ref.current || document.visibilityState !== "visible") {
+    if (!reveal || reduced || webkit || !doc.startViewTransition || !ref.current || document.visibilityState !== "visible") {
       applyTheme(next)
       return
     }
