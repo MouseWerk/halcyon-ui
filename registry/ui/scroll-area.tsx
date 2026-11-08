@@ -27,12 +27,16 @@ export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
       const el = ref.current
       if (!el) return
       const k = (v: number) => Math.max(0, Math.min(1, v / fadeSize))
-      setEdges({
-        t: k(el.scrollTop),
-        b: k(el.scrollHeight - el.clientHeight - el.scrollTop),
-        l: k(el.scrollLeft),
-        r: k(el.scrollWidth - el.clientWidth - el.scrollLeft),
-      })
+      // Rounded to 1/8 steps and compared, so scrolling the middle of a long
+      // list does not re-render on every scroll event.
+      const q = (v: number) => Math.round(k(v) * 8) / 8
+      const next = {
+        t: q(el.scrollTop),
+        b: q(el.scrollHeight - el.clientHeight - el.scrollTop),
+        l: q(el.scrollLeft),
+        r: q(el.scrollWidth - el.clientWidth - el.scrollLeft),
+      }
+      setEdges((prev) => (prev.t === next.t && prev.b === next.b && prev.l === next.l && prev.r === next.r ? prev : next))
     }, [fadeSize])
 
     React.useEffect(() => {

@@ -28,7 +28,6 @@ interface CartesianProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "chi
   title?: string
 }
 
-const W = 640
 const PAD = { l: 44, r: 12, t: 12, b: 28 }
 
 function niceMax(v: number) {
@@ -92,16 +91,19 @@ function Tooltip({ x, label, rows, width }: { x: number; label: string; rows: { 
 /** Shared frame: axes, gridlines, hover tracking and keyboard navigation. */
 function useCartesian({ data, series, height, format }: { data: Row[]; series: ChartSeries[]; height: number; format: (v: number) => string }) {
   const H = height
+  const box = React.useRef<HTMLDivElement>(null)
+  const [boxW, setBoxW] = React.useState(640)
+  // Draw at the real pixel width so text and strokes never scale.
+  const W = Math.max(240, Math.round(boxW))
   const max = niceMax(Math.max(0, ...data.flatMap((r) => series.map((s) => Number(r[s.key]) || 0))))
   const ticks = [0, 0.25, 0.5, 0.75, 1].map((k) => k * max)
   const y = (v: number) => PAD.t + (1 - v / max) * (H - PAD.t - PAD.b)
-  const box = React.useRef<HTMLDivElement>(null)
   const [hover, setHover] = React.useState<number | null>(null)
-  const [boxW, setBoxW] = React.useState(W)
   React.useEffect(() => {
     const el = box.current
     if (!el) return
-    const ro = new ResizeObserver(() => setBoxW(el.clientWidth))
+    setBoxW(el.clientWidth || 640)
+    const ro = new ResizeObserver(() => setBoxW(el.clientWidth || 640))
     ro.observe(el)
     return () => ro.disconnect()
   }, [])
@@ -115,7 +117,7 @@ function useCartesian({ data, series, height, format }: { data: Row[]; series: C
       ))}
     </g>
   )
-  return { H, y, max, box, hover, setHover, boxW, grid }
+  return { W, H, y, max, box, hover, setHover, boxW, grid }
 }
 
 function summary(title: string | undefined, data: Row[], index: string, series: ChartSeries[], format: (v: number) => string) {
@@ -130,7 +132,7 @@ export interface AreaChartProps extends CartesianProps {
 
 /** Area or line chart with a crosshair tooltip. Arrow keys move the crosshair when focused. */
 export function AreaChart({ data, index, series, format = (v) => v.toLocaleString("en-US"), height = 240, legend = true, title, lines = false, curve = "smooth", className, ...props }: AreaChartProps) {
-  const { H, y, box, hover, setHover, boxW, grid } = useCartesian({ data, series, height, format })
+  const { W, H, y, box, hover, setHover, boxW, grid } = useCartesian({ data, series, height, format })
   const mounted = useMounted()
   const gid = React.useId().replace(/:/g, "")
   const n = data.length
@@ -220,7 +222,7 @@ export function LineChart(props: Omit<AreaChartProps, "lines">) {
 
 /** Grouped bar chart with rounded tops that grow from the baseline. Hover or arrow keys show values. */
 export function BarChart({ data, index, series, format = (v) => v.toLocaleString("en-US"), height = 240, legend = true, title, className, ...props }: CartesianProps) {
-  const { H, y, box, hover, setHover, boxW, grid } = useCartesian({ data, series, height, format })
+  const { W, H, y, box, hover, setHover, boxW, grid } = useCartesian({ data, series, height, format })
   const mounted = useMounted()
   const n = data.length
   const band = (W - PAD.l - PAD.r) / Math.max(1, n)

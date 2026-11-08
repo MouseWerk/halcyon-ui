@@ -3,7 +3,7 @@
  * Builds a shadcn-compatible registry from registry/registry.json so every
  * component installs with the official CLI:
  *
- *   npx shadcn@latest add https://mauricekleindienst.github.io/halcyon-ui/r/knob.json
+ *   npx shadcn@latest add https://mousewerk.github.io/halcyon-ui/r/knob.json
  *
  * Output: www/public/r/<name>.json (registry-item schema) and r/registry.json (index).
  * The design tokens ship as the "halcyon" item (cssVars + css), which every
@@ -20,7 +20,7 @@ import { fileURLToPath } from "node:url"
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 const REG = path.join(root, "registry")
 const OUT = path.join(root, "www", "public", "r")
-const BASE_URL = (process.env.REGISTRY_URL ?? "https://mauricekleindienst.github.io/halcyon-ui/r").replace(/\/$/, "")
+const BASE_URL = (process.env.REGISTRY_URL ?? "https://mousewerk.github.io/halcyon-ui/r").replace(/\/$/, "")
 const registry = JSON.parse(fs.readFileSync(path.join(REG, "registry.json"), "utf8"))
 
 /* ---------- tiny CSS parser: rules -> nested objects ---------- */
@@ -117,7 +117,7 @@ for (const [name, item] of Object.entries(registry.items)) {
 fs.writeFileSync(path.join(OUT, "registry.json"), JSON.stringify({
   $schema: "https://ui.shadcn.com/schema/registry.json",
   name: "halcyon-ui",
-  homepage: "https://mauricekleindienst.github.io/halcyon-ui/",
+  homepage: "https://mousewerk.github.io/halcyon-ui/",
   items: [{ name: baseItem.name, type: baseItem.type, title: baseItem.title, description: baseItem.description }, ...index],
 }, null, 2) + "\n")
 

@@ -40,7 +40,7 @@ export function Sheet({ open, defaultOpen, onOpenChange, side = "right", title, 
       {mounted && (
         <Portal>
           <div className="fixed inset-0 z-50">
-            <div aria-hidden="true" className={cn("absolute inset-0 bg-[color-mix(in_oklab,var(--hc-bg)_50%,transparent)] backdrop-blur-[4px] transition-opacity duration-300", visible ? "opacity-100" : "opacity-0")} />
+            <div aria-hidden="true" className={cn("absolute inset-0 bg-[color-mix(in_oklab,var(--hc-bg)_72%,transparent)] transition-opacity duration-300", visible ? "opacity-100" : "opacity-0")} />
             <div
               ref={panel}
               role="dialog"

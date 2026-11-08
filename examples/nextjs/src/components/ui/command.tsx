@@ -81,7 +81,7 @@ export function CommandPalette({ items, open, onOpenChange, hotkey = "k", placeh
   return (
     <Portal>
       <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-[14vh]">
-        <div aria-hidden="true" className={cn("absolute inset-0 bg-[color-mix(in_oklab,var(--hc-bg)_55%,transparent)] backdrop-blur-[6px] transition-opacity duration-300", visible ? "opacity-100" : "opacity-0")} />
+        <div aria-hidden="true" className={cn("absolute inset-0 bg-[color-mix(in_oklab,var(--hc-bg)_72%,transparent)] transition-opacity duration-300", visible ? "opacity-100" : "opacity-0")} />
         <div
           ref={panel}
           role="dialog"

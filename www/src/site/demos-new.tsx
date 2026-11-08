@@ -89,7 +89,7 @@ function CopyDemo() {
     <div className="flex flex-wrap items-center justify-center gap-3">
       <div className="flex items-center gap-2 rounded-xl bg-bg py-1.5 pl-3.5 pr-1.5 font-mono text-[12.5px] shadow-inset-sm">
         npx halcyon add knob
-        <CopyButton value="npx github:mauricekleindienst/halcyon-ui add knob" onCopied={() => toast("Copied to clipboard")} />
+        <CopyButton value="npx github:MouseWerk/halcyon-ui add knob" onCopied={() => toast("Copied to clipboard")} />
       </div>
       <CopyButton label value="hc_live_8f2a91" />
     </div>

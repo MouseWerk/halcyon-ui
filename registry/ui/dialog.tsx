@@ -66,7 +66,7 @@ export function DialogContent({ dismissible = true, showClose = true, className,
         <div
           aria-hidden="true"
           className={cn(
-            "absolute inset-0 bg-[color-mix(in_oklab,var(--hc-bg)_55%,transparent)] backdrop-blur-[6px] transition-opacity duration-300",
+            "absolute inset-0 bg-[color-mix(in_oklab,var(--hc-bg)_72%,transparent)] transition-opacity duration-300",
             visible ? "opacity-100" : "opacity-0",
           )}
         />

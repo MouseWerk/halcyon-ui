@@ -31,3 +31,6 @@
 @keyframes float-b { 50% { transform: translateY(6px) rotate(1deg); } }
 .float-a { animation: float-a 6s ease-in-out infinite; }
 .float-b { animation: float-b 7s ease-in-out infinite; }
+
+/* Skip layout and paint for long sections until they get close to the viewport. */
+.cv-auto { content-visibility: auto; contain-intrinsic-size: auto 900px; }
