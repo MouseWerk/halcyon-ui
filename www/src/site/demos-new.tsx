@@ -139,12 +139,12 @@ function CalendarDemo() {
   const [r, setR] = React.useState<DateRange>({ from: null, to: null })
   return (
     <div className="flex flex-wrap items-start justify-center gap-6">
-      <div className="flex flex-col items-center gap-3">
-        <Calendar value={d} onValueChange={setD} isDisabled={(x) => x.getDay() === 0} />
+      <div className="flex w-full max-w-[296px] min-w-0 flex-col items-center gap-3">
+        <Calendar className="w-full" value={d} onValueChange={setD} isDisabled={(x) => x.getDay() === 0} />
         <span className="font-mono text-xs text-muted">{d ? d.toDateString() : "Pick a day (Sundays are off)"}</span>
       </div>
-      <div data-range-calendar className="flex flex-col items-center gap-3">
-        <Calendar mode="range" range={r} onRangeChange={setR} />
+      <div data-range-calendar className="flex w-full max-w-[296px] min-w-0 flex-col items-center gap-3">
+        <Calendar className="w-full" mode="range" range={r} onRangeChange={setR} />
         <span className="font-mono text-xs text-muted">{r.from ? `${r.from.toDateString()} → ${r.to ? r.to.toDateString() : "…"}` : "Pick a range"}</span>
       </div>
     </div>

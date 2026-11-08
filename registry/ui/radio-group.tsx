@@ -70,7 +70,7 @@ export function RadioItem({ value, label, description, className, disabled, ...p
         disabled={disabled}
         tabIndex={on || ctx.value === undefined ? 0 : -1}
         onClick={() => ctx.select(value)}
-        className="group relative mt-px grid size-[22px] shrink-0 cursor-pointer place-items-center rounded-full bg-bg shadow-inset-sm ring-1 ring-inset ring-line"
+        className="group relative mt-px grid size-6 shrink-0 cursor-pointer place-items-center rounded-full bg-bg shadow-inset-sm ring-1 ring-inset ring-line"
         {...props}
       >
         <span

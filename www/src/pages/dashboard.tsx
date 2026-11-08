@@ -45,7 +45,7 @@ export function DashboardExample() {
   ]
 
   return (
-    <div className="mx-auto grid w-full max-w-[1280px] gap-5 px-[max(20px,env(safe-area-inset-left))] pt-6 lg:grid-cols-[232px_minmax(0,1fr)]">
+    <div className="mx-auto grid grid-cols-1 w-full max-w-[1280px] gap-5 px-[max(16px,env(safe-area-inset-left))] pt-6 lg:grid-cols-[232px_minmax(0,1fr)]">
       <Card className="flex flex-col gap-4 self-start p-3 lg:sticky lg:top-[88px] lg:h-[calc(100dvh-112px)]">
         {/* workspace switcher */}
         <div className="hidden items-center gap-2.5 rounded-[14px] px-1.5 py-1 lg:flex">
@@ -57,7 +57,7 @@ export function DashboardExample() {
           <StatusLamp tone="ok" />
         </div>
         <div className="hidden px-2 font-mono text-[10px] uppercase tracking-[.16em] text-muted lg:block">Workspace</div>
-        <Nav className="max-lg:flex-row max-lg:overflow-x-auto max-lg:scrollbar-none">
+        <Nav className="max-lg:flex-row max-lg:overflow-x-auto max-lg:scrollbar-none max-lg:[mask-image:linear-gradient(to_right,black_82%,transparent)]">
           {nav.slice(0, 4).map((x) => <NavItem key={x.l} icon={x.i} count={x.c} active={page === x.l} onClick={() => setPage(x.l)} className="max-lg:w-auto max-lg:shrink-0">{x.l}</NavItem>)}
           <div className="mx-2 my-1 hidden h-px bg-line lg:block" />
           {nav.slice(4).map((x) => <NavItem key={x.l} icon={x.i} count={x.c} active={page === x.l} onClick={() => setPage(x.l)} className="max-lg:w-auto max-lg:shrink-0">{x.l}</NavItem>)}
@@ -90,14 +90,14 @@ export function DashboardExample() {
           </div>
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
           <Stat index={0} label="Monthly revenue" prefix="$" value={48.2} decimals={1} suffix="k" delta="+12.4%" spark={[18, 16, 20, 15, 19, 22, 21, 24, 23, 27]} note="sample" />
           <Stat index={1} label="Active users" value={3814} delta="+4.1%" spark={[10, 12, 11, 14, 13, 13, 15, 16, 15, 18]} note="sample" />
           <Stat index={2} label="Churn" value={2.3} decimals={1} suffix="%" delta="+0.3 pt" trend="down" spark={[8, 7, 9, 8, 8, 10, 9, 11, 10, 12]} note="sample" />
           <Stat index={3} label="p95 latency" value={184} suffix="ms" delta="-22 ms" spark={[24, 22, 23, 20, 21, 19, 18, 19, 17, 15]} note="sample" />
         </div>
 
-        <div className="grid gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+        <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
           <Card index={4}>
             <CardHeader>
               <div><CardTitle>Revenue</CardTitle><CardDescription>Each dot is booked revenue, sample data</CardDescription></div>
@@ -105,7 +105,7 @@ export function DashboardExample() {
                 <Segmented value={range} onValueChange={setRange} aria-label="Range" options={[{ value: "7d", label: "7D" }, { value: "30d", label: "30D" }, { value: "12m", label: "12M" }]} />
               </CardActions>
             </CardHeader>
-            <div className="overflow-x-auto max-sm:[mask-image:linear-gradient(to_right,black_80%,transparent)]"><DotChart labels={r.labels} values={r.values} unit={r.unit} format={r.fmt} /></div>
+            <div><DotChart labels={r.labels} values={r.values} unit={r.unit} format={r.fmt} /></div>
           </Card>
 
           <Card index={5}>
@@ -122,18 +122,18 @@ export function DashboardExample() {
           </Card>
         </div>
 
-        <div className="grid gap-5 xl:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+        <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
           <Card index={6}>
             <CardHeader>
               <div><CardTitle>Recent orders</CardTitle><CardDescription>Sample rows</CardDescription></div>
               <CardActions><Button onClick={() => toast("Export queued")}><IconDownload />Export</Button></CardActions>
             </CardHeader>
-            <Table>
-              <TableHeader><TableRow><TableHead>Order</TableHead><TableHead>Customer</TableHead><TableHead>Plan</TableHead><TableHead>Status</TableHead><TableHead align="right">Amount</TableHead></TableRow></TableHeader>
+            <Table className="max-sm:min-w-0">
+              <TableHeader><TableRow><TableHead className="max-sm:hidden">Order</TableHead><TableHead>Customer</TableHead><TableHead className="max-md:hidden">Plan</TableHead><TableHead>Status</TableHead><TableHead align="right">Amount</TableHead></TableRow></TableHeader>
               <TableBody>
                 {ORDERS.map((o) => (
                   <TableRow key={o.id} onClick={() => toast(`Opened ${o.id}`)}>
-                    <TableCell mono>{o.id}</TableCell><TableCell>{o.who}</TableCell><TableCell>{o.plan}</TableCell>
+                    <TableCell mono className="max-sm:hidden">{o.id}</TableCell><TableCell className="max-sm:rounded-l-xl">{o.who}</TableCell><TableCell className="max-md:hidden">{o.plan}</TableCell>
                     <TableCell><Badge tone={o.tone}>{o.status}</Badge></TableCell><TableCell align="right">{o.amt}</TableCell>
                   </TableRow>
                 ))}

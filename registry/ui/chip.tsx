@@ -43,7 +43,7 @@ export function Chip({ selected, onSelectedChange, onRemove, icon, className, ch
           aria-label="Remove"
           tabIndex={-1}
           onClick={onRemove}
-          className="mr-1 grid size-[18px] cursor-pointer place-items-center rounded-full bg-bg text-muted shadow-inset-sm transition-[color,scale] duration-200 ease-spring hover:text-bad active:scale-90"
+          className="touch-target mr-1 grid size-[18px] cursor-pointer place-items-center rounded-full bg-bg text-muted shadow-inset-sm transition-[color,scale] duration-200 ease-spring hover:text-bad active:scale-90"
         >
           <svg viewBox="0 0 12 12" className="size-2" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><path d="m3 3 6 6M9 3 3 9" /></svg>
         </button>

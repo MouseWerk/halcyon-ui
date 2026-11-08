@@ -200,6 +200,21 @@
   }
 }
 
+/* Grow the tap area of small controls to at least 24 x 24 px (WCAG 2.5.8)
+   without changing how they look. */
+@utility touch-target {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(100%, 24px);
+    height: max(100%, 24px);
+    transform: translate(-50%, -50%);
+  }
+}
+
 /* Hide scrollbars but keep scrolling (e.g. horizontal chip rows). */
 @utility scrollbar-none {
   scrollbar-width: none;

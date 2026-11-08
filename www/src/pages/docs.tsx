@@ -216,7 +216,7 @@ function Introduction() {
       <H1 lead="Tactile React components with soft surfaces, dot-matrix icons and springy motion. You copy them into your app, and from then on they are your code.">Introduction</H1>
       <P>Halcyon UI is not a package you add to your dependencies. It is a collection of components and a small CLI that copies their source into your project, the same way shadcn/ui works. You can read every line, change anything, and nothing breaks when a new version ships.</P>
       <H2>The design language</H2>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {[
           ["Raised and inset", "Every element either floats above the page or is pressed into it. Light falls from the top left."],
           ["One glow per theme", "Amber in light mode, violet in dark mode. It marks what is active, important or alive."],
@@ -429,7 +429,7 @@ function Theming() {
         </table>
       </div>
       <H2>Surface utilities</H2>
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {[["shadow-raised", "bg-surface shadow-raised"], ["shadow-inset", "bg-bg shadow-inset"], ["shadow-glow", "bg-surface shadow-glow"]].map(([n, cls]) => (
           <div key={n} className="flex flex-col items-center gap-3">
             <div className={cn("h-24 w-full rounded-2xl", cls)} />
@@ -469,7 +469,7 @@ function Cli() {
       <H2>list</H2>
       <Command cmd={`${NPX} list`} />
       <H2>Components</H2>
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         {demos.map((d) => (
           <a key={d.name} href={href(`/docs/components/${d.name}`)} className="flex items-center justify-between rounded-xl bg-bg px-3.5 py-2.5 font-mono text-[12.5px] shadow-inset-sm transition-colors hover:text-glow-ink">
             {d.name}<span className="text-muted">{d.group}</span>

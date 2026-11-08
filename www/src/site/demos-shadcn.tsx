@@ -111,7 +111,7 @@ function ChartDemo() {
   return (
     <div className="flex w-full flex-col gap-8">
       <AreaChart title="Revenue and costs by month" data={revenue} index="month" series={[{ key: "revenue", label: "Revenue" }, { key: "costs", label: "Costs" }]} format={(v) => `$${v}k`} />
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <BarChart title="Signups by quarter" data={[{ q: "Q1", web: 420, mobile: 310 }, { q: "Q2", web: 510, mobile: 380 }, { q: "Q3", web: 470, mobile: 450 }, { q: "Q4", web: 620, mobile: 540 }]} index="q" series={[{ key: "web", label: "Web" }, { key: "mobile", label: "Mobile" }]} height={220} />
         <LineChart title="p95 latency" data={months.slice(0, 8).map((m, i) => ({ m, p95: [182, 176, 190, 171, 165, 168, 152, 148][i] }))} index="m" series={[{ key: "p95", label: "p95 latency" }]} format={(v) => `${v}ms`} height={220} />
       </div>
@@ -402,7 +402,7 @@ function SidebarDemo() {
             <h3 className="m-0 text-base font-semibold">{page}</h3>
             <span className="ml-auto hidden font-mono text-[11px] text-muted sm:block">Ctrl/⌘ + B</span>
           </div>
-          <div className="grid flex-1 gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-1 flex-1 gap-3 sm:grid-cols-2">
             {[1, 2, 3, 4].map((k) => <div key={k} className="min-h-20 rounded-2xl bg-surface shadow-raised-sm" />)}
           </div>
         </SidebarInset>

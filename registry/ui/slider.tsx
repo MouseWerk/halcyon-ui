@@ -82,7 +82,7 @@ export function Slider({
           if (e.key === "End") { e.preventDefault(); set(max) }
         }}
         className={cn(
-          "absolute top-1/2 grid size-[22px] -translate-x-1/2 -translate-y-1/2 cursor-grab place-items-center rounded-[8px] bg-linear-to-br from-raise to-surface",
+          "absolute top-1/2 grid size-6 -translate-x-1/2 -translate-y-1/2 cursor-grab place-items-center rounded-[8px] bg-linear-to-br from-raise to-surface",
           "transition-[scale,box-shadow] duration-300 ease-spring",
           drag
             ? "scale-115 cursor-grabbing shadow-[0_0_0_1.5px_var(--hc-glow-soft),0_0_16px_var(--hc-glow-soft),0_4px_10px_var(--hc-sh-dark)]"
@@ -188,7 +188,7 @@ export function RangeSlider({
             if (e.key === "End") { e.preventDefault(); set(i, max) }
           }}
           className={cn(
-            "absolute top-1/2 grid size-[22px] -translate-x-1/2 -translate-y-1/2 cursor-grab place-items-center rounded-[8px] bg-linear-to-br from-raise to-surface",
+            "absolute top-1/2 grid size-6 -translate-x-1/2 -translate-y-1/2 cursor-grab place-items-center rounded-[8px] bg-linear-to-br from-raise to-surface",
             "transition-[scale,box-shadow] duration-300 ease-spring focus-visible:z-10",
             drag === i
               ? "z-10 scale-115 cursor-grabbing shadow-[0_0_0_1.5px_var(--hc-glow-soft),0_0_16px_var(--hc-glow-soft),0_4px_10px_var(--hc-sh-dark)]"

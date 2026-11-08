@@ -169,7 +169,7 @@ export function Header() {
     Demo: () => (
       <div className="flex flex-col gap-4">
         {["Maintenance mode", "New sign-ups", "Beta features"].map((l, i) => (
-          <label key={l} className="flex w-72 items-center justify-between gap-4">
+          <label key={l} className="flex w-full max-w-72 items-center justify-between gap-4">
             <span>{l}</span>
             <Switch defaultChecked={i > 0} aria-label={l} onCheckedChange={(on) => toast(`${l} ${on ? "on" : "off"}`)} />
           </label>
@@ -237,7 +237,7 @@ const arrow = bitmap(["..#..", ".###.", "#####", "..#..", "..#.."])
     name: "card", title: "Card", group: "Surfaces",
     description: "Raised or inset surface. Cards rise into place with a stagger when they mount.",
     Demo: () => (
-      <div className="grid w-full max-w-xl gap-5 sm:grid-cols-2">
+      <div className="grid grid-cols-1 w-full max-w-xl gap-5 sm:grid-cols-2">
         <Card index={0}>
           <CardHeader><div><CardTitle>Raised</CardTitle><CardDescription>Floats above the page</CardDescription></div></CardHeader>
           <p className="m-0 text-sm text-muted">For content groups that stand on their own.</p>
@@ -280,7 +280,7 @@ const arrow = bitmap(["..#..", ".###.", "#####", "..#..", "..#.."])
     name: "stat", title: "Stat", group: "Data",
     description: "KPI tile with a counting dot-matrix number, a delta chip and a self-drawing sparkline. Lifts on hover.",
     Demo: () => (
-      <div className="grid w-full max-w-2xl gap-5 sm:grid-cols-2">
+      <div className="grid grid-cols-1 w-full max-w-2xl gap-5 sm:grid-cols-2">
         <Stat label="Monthly revenue" prefix="$" value={48.2} decimals={1} suffix="k" delta="+12.4%" spark={[18, 16, 20, 15, 19, 22, 21, 24, 23, 27]} note="sample" />
         <Stat index={1} label="p95 latency" value={184} suffix="ms" delta="-22 ms" spark={[24, 22, 23, 20, 21, 19, 18, 19, 17, 15]} note="sample" />
       </div>
@@ -322,7 +322,7 @@ const arrow = bitmap(["..#..", ".###.", "#####", "..#..", "..#.."])
   {
     name: "sparkline", title: "Sparkline", group: "Data",
     description: "A sparkline that draws itself in the theme glow, with a soft area fill and an emphasised endpoint.",
-    Demo: () => <div className="w-72"><Sparkline data={[10, 12, 11, 14, 13, 13, 15, 16, 15, 18]} className="h-16" /></div>,
+    Demo: () => <div className="w-full max-w-72"><Sparkline data={[10, 12, 11, 14, 13, 13, 15, 16, 15, 18]} className="h-16" /></div>,
     usage: `import { Sparkline } from "@/components/ui/sparkline"
 
 <Sparkline data={[10, 12, 11, 14, 13, 18]} />`,
@@ -391,7 +391,7 @@ const arrow = bitmap(["..#..", ".###.", "#####", "..#..", "..#.."])
     Demo: () => (
       <div className="flex flex-col gap-3">
         {([["ok", "API gateway"], ["warn", "Job queue"], ["bad", "Webhooks"], ["glow", "Deploying"]] as const).map(([t, l]) => (
-          <div key={t} className="flex w-64 items-center gap-3 rounded-[13px] bg-bg px-3 py-2.5 shadow-inset-sm"><StatusLamp tone={t} /><span>{l}</span></div>
+          <div key={t} className="flex w-full max-w-64 items-center gap-3 rounded-[13px] bg-bg px-3 py-2.5 shadow-inset-sm"><StatusLamp tone={t} /><span>{l}</span></div>
         ))}
       </div>
     ),

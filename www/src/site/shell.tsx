@@ -54,7 +54,7 @@ export function Header({ route }: { route: string }) {
         scrolled && "bg-bg/95 shadow-[0_1px_0_var(--hc-line)]",
       )}
     >
-      <div className="mx-auto flex h-[72px] max-w-[1280px] items-center gap-6 px-[max(20px,env(safe-area-inset-left))]">
+      <div className="mx-auto flex h-[72px] max-w-[1280px] items-center gap-3 px-[max(16px,env(safe-area-inset-left))] sm:gap-6">
         <Logo />
         <nav className="hidden items-center gap-1 md:flex">
           {links.map((l) => {
@@ -74,11 +74,11 @@ export function Header({ route }: { route: string }) {
             )
           })}
         </nav>
-        <div className="ml-auto flex items-center gap-3">
-          <button type="button" onClick={() => setSearch(true)} className="hidden cursor-pointer items-center gap-2 rounded-xl bg-bg px-3 py-2 text-[13px] text-muted shadow-inset-sm transition-colors hover:text-ink sm:flex">
+        <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
+          <button type="button" onClick={() => setSearch(true)} className="hidden cursor-pointer items-center gap-2 rounded-xl bg-bg px-3 py-2 text-[13px] text-muted shadow-inset-sm transition-colors hover:text-ink lg:flex">
             <IconSearch className="size-3.5" /> Search docs <Kbd>Ctrl K</Kbd>
           </button>
-          <button type="button" aria-label="Search" onClick={() => setSearch(true)} className="grid size-10 cursor-pointer place-items-center rounded-[13px] bg-bg text-muted shadow-inset-sm sm:hidden [&_svg]:size-4"><IconSearch /></button>
+          <button type="button" aria-label="Search" onClick={() => setSearch(true)} className="grid size-10 cursor-pointer place-items-center rounded-[13px] bg-bg text-muted shadow-inset-sm lg:hidden [&_svg]:size-4"><IconSearch /></button>
           <CommandPalette
             open={search}
             onOpenChange={setSearch}

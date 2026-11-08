@@ -20,9 +20,9 @@ export function Breadcrumb({ items, className, ...props }: BreadcrumbProps) {
           return (
             <li key={i} className="flex items-center gap-1.5">
               {last ? (
-                <span aria-current="page" className="rounded-md bg-surface px-1.5 py-0.5 text-ink shadow-raised-sm">{c.label}</span>
+                <span aria-current="page" className="inline-flex min-h-6 items-center rounded-md bg-surface px-1.5 text-ink shadow-raised-sm">{c.label}</span>
               ) : c.href ? (
-                <a href={c.href} className="rounded-md px-1 py-0.5 transition-colors hover:text-ink">{c.label}</a>
+                <a href={c.href} className="inline-flex min-h-6 items-center rounded-md px-1 transition-colors hover:text-ink">{c.label}</a>
               ) : (
                 <span className="px-1">{c.label}</span>
               )}

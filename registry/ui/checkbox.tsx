@@ -35,7 +35,7 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
           setInner(!on)
           onCheckedChange?.(!on)
         }}
-        className={cn("group relative grid size-[22px] shrink-0 cursor-pointer place-items-center rounded-[7px] bg-bg shadow-inset-sm ring-1 ring-inset ring-line", !label && className)}
+        className={cn("group relative grid size-6 shrink-0 cursor-pointer place-items-center rounded-[7px] bg-bg shadow-inset-sm ring-1 ring-inset ring-line", !label && className)}
         {...props}
       >
         <span

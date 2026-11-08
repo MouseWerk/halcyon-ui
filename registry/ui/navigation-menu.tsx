@@ -64,11 +64,11 @@ export function NavigationMenu({ items, className, ...aria }: NavigationMenuProp
     <nav
       ref={root}
       aria-label={aria["aria-label"] ?? "Main"}
-      className={cn("relative", className)}
+      className={cn("relative max-w-full", className)}
       onPointerLeave={(e) => e.pointerType === "mouse" && openAt(null, 200)}
     >
       <ul
-        className="relative m-0 flex list-none items-center gap-1 rounded-[14px] bg-bg p-1 shadow-inset-sm"
+        className="relative m-0 flex max-w-full list-none items-center gap-1 overflow-x-auto rounded-[14px] bg-bg p-1 shadow-inset-sm scrollbar-none"
         onKeyDown={(e) => {
           const i = triggers.current.indexOf(document.activeElement as HTMLElement)
           if (i < 0) return

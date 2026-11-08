@@ -130,7 +130,7 @@ export function DataTable<T>({
                     className={cn("px-3 py-1 text-left font-mono text-[10.5px] font-normal uppercase tracking-[.12em] text-muted", c.align === "right" && "text-right", c.hideOnMobile && "max-sm:hidden", c.className)}
                   >
                     {c.sortable ? (
-                      <button type="button" onClick={() => toggleSort(c.key)} className={cn("inline-flex cursor-pointer items-center gap-1.5 uppercase tracking-[.12em] transition-colors hover:text-ink", s && "text-ink", c.align === "right" && "flex-row-reverse")}>
+                      <button type="button" onClick={() => toggleSort(c.key)} className={cn("inline-flex min-h-6 cursor-pointer items-center gap-1.5 uppercase tracking-[.12em] transition-colors hover:text-ink", s && "text-ink", c.align === "right" && "flex-row-reverse")}>
                         {c.header}
                         <span aria-hidden="true" className="flex flex-col gap-[2px]">
                           <span className={cn("size-1 rounded-full", s === "asc" ? "bg-glow shadow-[0_0_4px_var(--hc-glow)]" : "bg-dot-off")} />

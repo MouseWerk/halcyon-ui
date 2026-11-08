@@ -173,7 +173,7 @@ export const moreDemos: DemoEntry[] = [
     name: "radio-group", title: "Radio Group", group: "Forms",
     description: "Recessed wells; the chosen one gets a glowing bead that springs in. Arrow keys move the choice.",
     Demo: () => (
-      <RadioGroup defaultValue="pro" className="w-72">
+      <RadioGroup defaultValue="pro" className="w-full max-w-72">
         <RadioItem value="starter" label="Starter" description="1 project, community support" />
         <RadioItem value="pro" label="Pro" description="Unlimited projects, email support" />
         <RadioItem value="team" label="Team" description="SSO, audit log, priority support" />
@@ -238,7 +238,7 @@ export const moreDemos: DemoEntry[] = [
   {
     name: "textarea", title: "Textarea", group: "Forms",
     description: "Recessed multi-line field that can grow with its content and count characters.",
-    Demo: () => <Textarea className="w-96 max-w-full" placeholder="Release notes for build 0.4.13" maxLength={200} autoGrow={220} />,
+    Demo: () => <Textarea className="w-full max-w-96" placeholder="Release notes for build 0.4.13" maxLength={200} autoGrow={220} />,
     usage: `import { Textarea } from "@/components/ui/textarea"
 
 <Textarea maxLength={200} autoGrow={240} placeholder="Release notes" />`,
@@ -251,7 +251,7 @@ export const moreDemos: DemoEntry[] = [
     name: "label", title: "Label", group: "Forms",
     description: "Form label with an optional muted hint.",
     Demo: () => (
-      <div className="flex w-80 flex-col gap-2">
+      <div className="flex w-full max-w-80 flex-col gap-2">
         <Label htmlFor="ws" hint="Shown in the sidebar">Workspace name</Label>
         <Input id="ws" defaultValue="Halcyon Labs" />
       </div>
@@ -318,7 +318,7 @@ export const moreDemos: DemoEntry[] = [
     name: "scroll-area", title: "Scroll Area", group: "Surfaces",
     description: "Scroll container whose edges fade only where more content is hidden, with the tactile Halcyon scrollbar.",
     Demo: () => (
-      <ScrollArea className="h-56 w-72 rounded-2xl bg-bg p-3 shadow-inset" scrollbar="inset">
+      <ScrollArea className="h-56 w-full max-w-72 rounded-2xl bg-bg p-3 shadow-inset" scrollbar="inset">
         <div className="flex flex-col gap-2">
           {Array.from({ length: 16 }, (_, i) => (
             <div key={i} className="flex items-center justify-between rounded-xl bg-surface px-3 py-2 text-[13px] shadow-raised-sm">
@@ -341,7 +341,7 @@ export const moreDemos: DemoEntry[] = [
     name: "separator", title: "Separator", group: "Surfaces",
     description: "An engraved groove that catches the light, or a dotted rule.",
     Demo: () => (
-      <div className="flex w-80 flex-col gap-5 text-sm">
+      <div className="flex w-full max-w-80 flex-col gap-5 text-sm">
         <span>Account</span><Separator /><span>Billing</span><Separator variant="dots" /><span>Danger zone</span>
       </div>
     ),
@@ -418,7 +418,7 @@ export const moreDemos: DemoEntry[] = [
     description: "A floating raised panel anchored to its trigger. It flips when there is no room and scales out from the anchor.",
     Demo: () => (
       <Popover trigger={<Button>Share</Button>}>
-        <div className="flex w-64 flex-col gap-3">
+        <div className="flex w-full max-w-64 flex-col gap-3">
           <div className="text-sm font-semibold">Share dashboard</div>
           <Input defaultValue="halcyon.app/d/8f2k" trailing={<button type="button" aria-label="Copy link" className="text-muted hover:text-ink" onClick={() => toast("Link copied")}><IconCopy /></button>} />
           <Checkbox label="Anyone with the link can view" defaultChecked />
@@ -539,7 +539,7 @@ export const moreDemos: DemoEntry[] = [
     name: "spinner", title: "Spinner", group: "Feedback",
     description: "A ring of dots with a glowing comet running around it.",
     Demo: () => (
-      <div className="flex items-center gap-8">
+      <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8">
         <Spinner size={18} /><Spinner size={28} /><Spinner size={44} dots={14} />
         <Button variant="glow" disabled><Spinner size={14} dots={8} /> Deploying</Button>
       </div>

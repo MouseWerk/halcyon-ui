@@ -23,20 +23,33 @@ function range(page: number, count: number, sib: number): (number | "gap")[] {
   return out
 }
 
+const subscribeNarrow = (cb: () => void) => {
+  const mq = window.matchMedia("(max-width: 479px)")
+  mq.addEventListener("change", cb)
+  return () => mq.removeEventListener("change", cb)
+}
+/** True on phone-width screens (SSR: false). */
+function useNarrow() {
+  return React.useSyncExternalStore(subscribeNarrow, () => window.matchMedia("(max-width: 479px)").matches, () => false)
+}
+
 /** Keys for each page in a recessed rail; the current page is a glowing raised key. */
 export function Pagination({ page, pageCount, onPageChange, siblings = 1, className, ...props }: PaginationProps) {
-  const key = "grid h-9 min-w-9 cursor-pointer place-items-center rounded-[10px] px-2 font-mono text-[12.5px] transition-[color,box-shadow,scale,background-color] duration-300 ease-spring active:scale-90 disabled:pointer-events-none disabled:opacity-35"
+  // On phones show only first, current and last page so the rail always fits.
+  const narrow = useNarrow()
+  if (narrow) siblings = 0
+  const key = "grid h-9 min-w-9 max-[479px]:h-8 max-[479px]:min-w-8 cursor-pointer place-items-center rounded-[10px] px-2 font-mono text-[12.5px] transition-[color,box-shadow,scale,background-color] duration-300 ease-spring active:scale-90 disabled:pointer-events-none disabled:opacity-35"
   const arrow = (d: -1 | 1) => (
     <button type="button" aria-label={d < 0 ? "Previous page" : "Next page"} disabled={d < 0 ? page <= 1 : page >= pageCount} onClick={() => onPageChange(page + d)} className={cn(key, "text-muted hover:text-ink")}>
       <svg viewBox="0 0 12 12" className="size-3" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d={d < 0 ? "M7.5 2.5 4 6l3.5 3.5" : "M4.5 2.5 8 6 4.5 9.5"} /></svg>
     </button>
   )
   return (
-    <nav aria-label="Pagination" className={cn("inline-flex items-center gap-1 rounded-[14px] bg-bg p-1 shadow-inset-sm", className)} {...props}>
+    <nav aria-label="Pagination" className={cn("inline-flex max-w-full items-center gap-1 rounded-[14px] bg-bg p-1 shadow-inset-sm", className)} {...props}>
       {arrow(-1)}
       {range(page, pageCount, siblings).map((p, i) =>
         p === "gap" ? (
-          <span key={`g${i}`} className="grid h-9 w-6 place-items-center text-muted">&middot;&middot;</span>
+          <span key={`g${i}`} className="grid h-9 w-5 place-items-center text-muted max-[479px]:h-8">&middot;&middot;</span>
         ) : (
           <button
             key={p}

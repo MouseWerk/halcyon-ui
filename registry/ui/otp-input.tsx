@@ -69,7 +69,7 @@ export function OtpInput({
             <span
               aria-hidden="true"
               className={cn(
-                "relative grid h-12 w-10 place-items-center rounded-xl bg-bg font-dot text-2xl font-extrabold shadow-inset-sm",
+                "relative grid h-11 w-8 place-items-center min-[360px]:w-[34px] rounded-xl bg-bg font-dot text-xl font-extrabold shadow-inset-sm min-[400px]:h-12 min-[400px]:w-10 min-[400px]:text-2xl",
                 "transition-[box-shadow] duration-300 ease-out-soft sm:h-14 sm:w-11",
                 isActive && "shadow-[inset_2px_2px_5px_var(--hc-sh-dark),inset_-2px_-2px_5px_var(--hc-sh-light),0_0_0_1.5px_var(--hc-glow-soft)]",
                 invalid && "shadow-[inset_2px_2px_5px_var(--hc-sh-dark),inset_-2px_-2px_5px_var(--hc-sh-light),0_0_0_1.5px_var(--hc-bad)]",

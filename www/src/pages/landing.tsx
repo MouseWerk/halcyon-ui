@@ -62,7 +62,7 @@ function Hero() {
 
         {/* stage */}
         <div className="mt-16 w-full max-w-[1080px] animate-hc-rise rounded-[36px] bg-bg p-4 text-left shadow-inset [animation-delay:420ms] sm:mt-20 sm:p-6">
-          <div className="grid items-center gap-5 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-8">
+          <div className="grid grid-cols-1 items-center gap-5 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-8">
             {/* left rack */}
             <div className="hidden flex-col gap-5 lg:flex">
               <Stat label="Active users" value={3814} delta="+4.1%" spark={[10, 12, 11, 14, 13, 13, 15, 16, 15, 18]} animate={false} />
@@ -215,7 +215,7 @@ function ThemeTile() {
           </div>
           <div className="flex items-center justify-between gap-2">
             <span className="font-dot text-2xl font-extrabold">{t === "light" ? "12:00" : "00:00"}</span>
-            <Meter value={t === "light" ? 60 : 80} segments={8} className="w-20" />
+            <Meter value={t === "light" ? 60 : 80} segments={8} className="w-12 min-w-0 shrink sm:w-20" />
           </div>
         </div>
       ))}
@@ -272,7 +272,7 @@ function Features() {
           Soft to look at. Satisfying to use.
         </h2>
       </div>
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {features.map((f, i) => (
           <Card key={f.title} index={i} className={cn("flex flex-col gap-4 p-6", f.span)}>
             {f.tile}
@@ -355,10 +355,10 @@ function Showcase() {
       </div>
 
       <div className="rounded-[28px] bg-bg p-3 shadow-inset sm:p-5">
-        <div className="grid gap-5 lg:grid-cols-[232px_minmax(0,1fr)]">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-[232px_minmax(0,1fr)]">
           <ShowcaseSidebar active={active} onSelect={setActive} />
           <div className="flex min-w-0 flex-col gap-5">
-            <div className="grid gap-5 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
               <Stat label="Revenue" prefix="$" value={48.2} decimals={1} suffix="k" delta="+12.4%" spark={[18, 16, 20, 15, 19, 22, 21, 24, 23, 27]} note="sample" />
               <Stat index={1} label="Users" value={3814} delta="+4.1%" spark={[10, 12, 11, 14, 13, 13, 15, 16, 15, 18]} note="sample" />
               <Stat index={2} label="Churn" value={2.3} decimals={1} suffix="%" delta="+0.3 pt" trend="down" spark={[8, 7, 9, 8, 8, 10, 9, 11, 10, 12]} note="sample" />
@@ -368,7 +368,7 @@ function Showcase() {
                 <div><h3 className="m-0 text-sm font-semibold">Revenue</h3><p className="m-0 text-xs text-muted">Each dot is a unit of booked revenue</p></div>
                 <Segmented className="ml-auto" value={r} onValueChange={setR} options={[{ value: "7d", label: "7D" }, { value: "12m", label: "12M" }]} />
               </div>
-              <div className="overflow-x-auto max-sm:[mask-image:linear-gradient(to_right,black_80%,transparent)]"><DotChart {...data} format={(v) => `$${r === "12m" ? v : v.toFixed(1)}k`} /></div>
+              <div><DotChart {...data} format={(v) => `$${r === "12m" ? v : v.toFixed(1)}k`} /></div>
             </Card>
           </div>
         </div>
@@ -388,7 +388,7 @@ function ComponentGrid() {
       </div>
       <div className="flex flex-col gap-3">
         {groups.map((g) => (
-          <div key={g} className="grid items-start gap-3 rounded-[22px] bg-bg p-3 shadow-inset sm:grid-cols-[120px_minmax(0,1fr)] sm:items-center sm:p-4">
+          <div key={g} className="grid grid-cols-1 items-start gap-3 rounded-[22px] bg-bg p-3 shadow-inset sm:grid-cols-[120px_minmax(0,1fr)] sm:items-center sm:p-4">
             <div className="flex items-center gap-2 px-1.5 font-mono text-[10.5px] uppercase tracking-[.16em] text-muted">
               {g}
               <span className="text-glow-ink">{demos.filter((d) => d.group === g).length}</span>
