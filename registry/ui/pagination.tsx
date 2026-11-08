@@ -16,9 +16,12 @@ function range(page: number, count: number, sib: number): (number | "gap")[] {
   const start = Math.max(2, page - sib)
   const end = Math.min(count - 1, page + sib)
   out.push(1)
-  if (start > 2) out.push("gap")
+  // A gap only when it hides two or more pages; a single hidden page is shown instead
+  if (start === 3) out.push(2)
+  else if (start > 3) out.push("gap")
   for (let i = start; i <= end; i++) out.push(i)
-  if (end < count - 1) out.push("gap")
+  if (end === count - 2) out.push(count - 1)
+  else if (end < count - 2) out.push("gap")
   if (count > 1) out.push(count)
   return out
 }

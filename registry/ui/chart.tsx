@@ -314,7 +314,7 @@ export function DonutChart({ data, format = (v) => v.toLocaleString("en-US"), si
     return { ...d, a0, a1, color: d.color ?? chartColors[i % chartColors.length], i }
   })
   const arc = (a0: number, a1: number, ro: number, ri: number) => {
-    const p = (a: number, rr: number) => `${C + Math.sin(a) * rr},${C - Math.cos(a) * rr}`
+    const p = (a: number, rr: number) => `${(C + Math.sin(a) * rr).toFixed(3)},${(C - Math.cos(a) * rr).toFixed(3)}`
     const large = a1 - a0 > Math.PI ? 1 : 0
     return `M${p(a0, ro)} A${ro},${ro} 0 ${large} 1 ${p(a1, ro)} L${p(a1, ri)} A${ri},${ri} 0 ${large} 0 ${p(a0, ri)} Z`
   }

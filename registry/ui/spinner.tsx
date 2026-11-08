@@ -22,8 +22,8 @@ export function Spinner({ size = 24, dots = 10, label = "Loading", className, st
             className="absolute rounded-full bg-glow animate-[hc-orbit_1s_linear_infinite] shadow-[0_0_6px_var(--hc-glow)]"
             style={{
               width: d, height: d,
-              left: size / 2 + Math.cos(a) * r - d / 2,
-              top: size / 2 + Math.sin(a) * r - d / 2,
+              left: +(size / 2 + Math.cos(a) * r - d / 2).toFixed(3),
+              top: +(size / 2 + Math.sin(a) * r - d / 2).toFixed(3),
               animationDelay: `${(i / dots) - 1}s`,
             }}
           />

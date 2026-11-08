@@ -42,7 +42,8 @@ export const MenuList = React.forwardRef<HTMLDivElement, MenuListProps>(
       const it = items[i]
       if (!it || !isSelectable(it)) return
       if (it.type === "checkbox") { it.onCheckedChange(!it.checked); return }
-      if (it.type === "radio") { it.onSelect(); return }
+      // Picking an option closes the menu, like a native select
+      if (it.type === "radio") { it.onSelect(); onClose(); return }
       if (it.type === undefined || it.type === "item") { it.onSelect?.(); onClose() }
     }
 

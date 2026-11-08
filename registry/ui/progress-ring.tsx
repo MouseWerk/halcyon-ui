@@ -41,8 +41,8 @@ export function ProgressRing({ value, max = 100, size = 96, dots = 32, tone = "g
           return (
             <circle
               key={i}
-              cx={r + Math.cos(a) * ringR}
-              cy={r + Math.sin(a) * ringR}
+              cx={+(r + Math.cos(a) * ringR).toFixed(3)}
+              cy={+(r + Math.sin(a) * ringR).toFixed(3)}
               r={dotR}
               className={cn("transition-[fill] duration-300", on ? fills[tone] : "fill-dot-off")}
               style={{ transitionDelay: `${i * 18}ms`, filter: on && i === lit - 1 ? `drop-shadow(0 0 3px ${glows[tone]})` : undefined }}

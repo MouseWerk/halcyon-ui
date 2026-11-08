@@ -170,10 +170,12 @@ export interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLB
    * navigation. Defaults to a plain `<a>`.
    */
   linkAs?: React.ElementType
+  /** Opens something outside the app: no LED, since the LED marks the current page. */
+  external?: boolean
 }
 
 /** Menu row. Active rows rise out of the rail and light their LED; collapsed rows show only the icon. */
-export function SidebarMenuButton({ icon, active, badge, tooltip, href, linkAs: LinkComp = "a", className, children, onClick, ...props }: SidebarMenuButtonProps) {
+export function SidebarMenuButton({ icon, active, badge, tooltip, href, linkAs: LinkComp = "a", external: externalProp, className, children, onClick, ...props }: SidebarMenuButtonProps) {
   const { isMobile, setOpenMobile, open } = useSidebar()
   const collapsed = !isMobile && !open
   const cls = cn(
@@ -183,13 +185,15 @@ export function SidebarMenuButton({ icon, active, badge, tooltip, href, linkAs: 
     active ? "bg-raise text-ink shadow-raised-sm" : "text-muted hover:text-ink",
     className,
   )
+  // Links that leave the app get no LED: it marks the current page
+  const external = externalProp || (!!href && /^[a-z][a-z0-9+.-]*:/i.test(href))
   const body = (
     <>
       {icon}
       <span className="min-w-0 flex-1 truncate group-data-[state=collapsed]/sidebar:sr-only">{children}</span>
       {badge !== undefined ? (
         <span className="rounded-full bg-bg px-[7px] py-px font-mono text-[11px] shadow-inset-sm group-data-[state=collapsed]/sidebar:absolute group-data-[state=collapsed]/sidebar:right-1.5 group-data-[state=collapsed]/sidebar:top-1 group-data-[state=collapsed]/sidebar:size-1.5 group-data-[state=collapsed]/sidebar:bg-glow group-data-[state=collapsed]/sidebar:p-0 group-data-[state=collapsed]/sidebar:text-[0px] group-data-[state=collapsed]/sidebar:shadow-[0_0_6px_var(--hc-glow)]">{badge}</span>
-      ) : (
+      ) : external ? null : (
         <i className={cn("size-1.5 shrink-0 rounded-full transition-[background-color,box-shadow] duration-300 group-data-[state=collapsed]/sidebar:hidden", active ? "bg-glow shadow-[0_0_8px_var(--hc-glow),0_0_16px_var(--hc-glow-soft)]" : "bg-dot-off")} />
       )}
     </>

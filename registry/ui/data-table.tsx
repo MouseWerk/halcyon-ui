@@ -25,7 +25,7 @@ export interface DataTableProps<T> {
   columns: DataTableColumn<T>[]
   /** Stable id per row (needed for selection). */
   rowId?: (row: T, index: number) => string
-  /** Show the search field and filter on these column keys (default: all). */
+  /** Show the search field and filter on these keys (default: all columns). Keys that are not columns read row[key]. */
   searchable?: boolean | string[]
   searchPlaceholder?: string
   /** Rows per page; 0 shows everything. */
@@ -37,6 +37,8 @@ export interface DataTableProps<T> {
   toolbar?: React.ReactNode
   empty?: React.ReactNode
   initialSort?: { key: string; dir: "asc" | "desc" }
+  /** Phone layout: render each row as a card instead of a table row (below sm). */
+  renderCard?: (row: T) => React.ReactNode
   /** UI strings, for translation. */
   labels?: Partial<DataTableLabels>
   className?: string
@@ -49,8 +51,9 @@ export interface DataTableLabels {
   selectPage: string
   selectRow: string
   table: string
+  selected: string
 }
-const DEFAULT_LABELS: DataTableLabels = { of: "of", rows: "rows", selectPage: "Select page", selectRow: "Select row", table: "Data table" }
+const DEFAULT_LABELS: DataTableLabels = { of: "of", rows: "rows", selectPage: "Select page", selectRow: "Select row", table: "Data table", selected: "selected" }
 
 type Sort = { key: string; dir: "asc" | "desc" } | null
 
@@ -60,7 +63,7 @@ type Sort = { key: string; dir: "asc" | "desc" } | null
  */
 export function DataTable<T>({
   data, columns, rowId = (_, i) => String(i), searchable = true, searchPlaceholder = "Search", pageSize = 10,
-  selectable, onSelectionChange, onRowClick, toolbar, empty = "No results.", initialSort, labels: labelsProp, className, ...aria
+  selectable, onSelectionChange, onRowClick, toolbar, empty = "No results.", initialSort, renderCard, labels: labelsProp, className, ...aria
 }: DataTableProps<T>) {
   const L = { ...DEFAULT_LABELS, ...labelsProp }
   const [q, setQ] = React.useState("")
@@ -74,7 +77,15 @@ export function DataTable<T>({
     const keys = Array.isArray(searchable) ? searchable : columns.map((c) => c.key)
     const needle = q.trim().toLowerCase()
     let out = data.map((row, i) => ({ row, id: rowId(row, i) }))
-    if (needle) out = out.filter(({ row }) => columns.some((c) => keys.includes(c.key) && String(get(row, c) ?? "").toLowerCase().includes(needle)))
+    if (needle) {
+      const byKey = new Map(columns.map((c) => [c.key, c]))
+      const text = (row: T, key: string) => {
+        const c = byKey.get(key)
+        const v = c ? get(row, c) : (row as Record<string, unknown>)[key]
+        return v == null ? "" : String(v).toLowerCase()
+      }
+      out = out.filter(({ row }) => keys.some((k) => text(row, k).includes(needle)))
+    }
     if (sort) {
       const c = columns.find((x) => x.key === sort.key)
       if (c) {
@@ -94,9 +105,20 @@ export function DataTable<T>({
   const p = Math.min(page, pages)
   const visible = pageSize ? rows.slice((p - 1) * pageSize, p * pageSize) : rows
 
-  const update = (next: Set<string>) => { setSelected(next); onSelectionChange?.([...next]) }
-  const allOnPage = visible.length > 0 && visible.every((r) => selected.has(r.id))
-  const someOnPage = visible.some((r) => selected.has(r.id))
+  // Selection only ever covers rows that are still in the (filtered) result,
+  // so bulk actions never touch rows the user can no longer see.
+  const visibleIds = React.useMemo(() => new Set(rows.map((r) => r.id)), [rows])
+  const effective = React.useMemo(() => [...selected].filter((id) => visibleIds.has(id)), [selected, visibleIds])
+  const effectiveKey = effective.join("\u0000")
+  const notify = React.useRef(onSelectionChange)
+  React.useEffect(() => { notify.current = onSelectionChange })
+  React.useEffect(() => { notify.current?.(effectiveKey ? effectiveKey.split("\u0000") : []) }, [effectiveKey])
+
+  const isOn = (id: string) => selected.has(id) && visibleIds.has(id)
+  const update = (next: Set<string>) => setSelected(new Set([...next].filter((id) => visibleIds.has(id))))
+  const toggle = (id: string) => { const n = new Set(selected); if (isOn(id)) n.delete(id); else n.add(id); update(n) }
+  const allOnPage = visible.length > 0 && visible.every((r) => isOn(r.id))
+  const someOnPage = visible.some((r) => isOn(r.id))
 
   const toggleSort = (key: string) => {
     setSort((s) => (!s || s.key !== key ? { key, dir: "asc" } : s.dir === "asc" ? { key, dir: "desc" } : null))
@@ -120,10 +142,33 @@ export function DataTable<T>({
             </label>
           )}
           {toolbar}
-          {selectable && selected.size > 0 && <span className="font-mono text-xs text-muted" aria-live="polite">{selected.size} selected</span>}
+          {selectable && effective.length > 0 && <span className="font-mono text-xs text-muted" aria-live="polite">{effective.length} {L.selected}</span>}
         </div>
       )}
-      <div tabIndex={0} role="region" aria-label={aria["aria-label"] ?? L.table} className="-mx-1.5 overflow-x-auto rounded-xl outline-offset-2">
+      {renderCard && (
+        <ul aria-label={aria["aria-label"] ?? L.table} className="flex flex-col gap-2 sm:hidden">
+          {visible.length === 0 && <li className="rounded-xl bg-bg px-3 py-10 text-center text-muted">{empty}</li>}
+          {visible.map(({ row, id }) => {
+            const on = isOn(id)
+            return (
+              <li
+                key={id}
+                data-selected={on || undefined}
+                onClick={onRowClick ? () => onRowClick(row) : undefined}
+                className={cn("flex items-start gap-3 rounded-xl p-3 transition-colors duration-300", on ? "bg-raise" : "bg-bg", onRowClick && "cursor-pointer active:bg-raise")}
+              >
+                {selectable && (
+                  <span className="pt-0.5" onClick={(e) => e.stopPropagation()}>
+                    <Checkbox aria-label={L.selectRow} checked={on} onCheckedChange={() => toggle(id)} />
+                  </span>
+                )}
+                <div className="min-w-0 flex-1">{renderCard(row)}</div>
+              </li>
+            )
+          })}
+        </ul>
+      )}
+      <div tabIndex={0} role="region" aria-label={aria["aria-label"] ?? L.table} className={cn("-mx-1.5 overflow-x-auto rounded-xl outline-offset-2", renderCard && "max-sm:hidden")}>
         <table className="w-full border-separate border-spacing-x-0 border-spacing-y-1.5 px-1.5 text-[13.5px]">
           <thead>
             <tr>
@@ -160,7 +205,7 @@ export function DataTable<T>({
               <tr><td colSpan={columns.length + (selectable ? 1 : 0)} className="rounded-xl bg-bg px-3 py-10 text-center text-muted">{empty}</td></tr>
             )}
             {visible.map(({ row, id }) => {
-              const on = selected.has(id)
+              const on = isOn(id)
               return (
                 <tr
                   key={id}
@@ -170,7 +215,7 @@ export function DataTable<T>({
                 >
                   {selectable && (
                     <td className={cn("rounded-l-xl px-3 py-[11px] transition-colors duration-300", on ? "bg-raise" : "bg-bg group-hover:bg-raise")} onClick={(e) => e.stopPropagation()}>
-                      <Checkbox aria-label={L.selectRow} checked={on} onCheckedChange={() => { const n = new Set(selected); if (on) n.delete(id); else n.add(id); update(n) }} />
+                      <Checkbox aria-label={L.selectRow} checked={on} onCheckedChange={() => toggle(id)} />
                     </td>
                   )}
                   {columns.map((c, ci) => (

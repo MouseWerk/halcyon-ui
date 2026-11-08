@@ -112,8 +112,8 @@ export function Knob({
             return (
               <circle
                 key={i}
-                cx={r + Math.cos(a) * ringR}
-                cy={r + Math.sin(a) * ringR}
+                cx={+(r + Math.cos(a) * ringR).toFixed(3)}
+                cy={+(r + Math.sin(a) * ringR).toFixed(3)}
                 r={1.7}
                 className={cn("transition-[fill] duration-150", on ? "fill-glow" : "fill-dot-off")}
                 style={on ? { filter: "drop-shadow(0 0 2px var(--hc-glow))" } : undefined}
