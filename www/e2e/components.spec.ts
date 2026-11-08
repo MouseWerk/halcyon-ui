@@ -53,7 +53,10 @@ test("theme switch flips the theme and remembers it", async ({ page }) => {
   const was = await sw.getAttribute("aria-checked")
   await sw.click()
   const want = was === "true" ? "light" : "dark"
-  await expect(page.locator("html")).toHaveAttribute("data-theme", want)
+  const state = () => page.evaluate(() => ({ theme: document.documentElement.dataset.theme, stored: localStorage.getItem("hc-theme"), visibility: document.visibilityState, vt: "startViewTransition" in document }))
+  await expect.poll(async () => (await state()).theme, { message: "theme after click" }).toBe(want).catch(async (e) => {
+    throw new Error(`${e.message}\nstate: ${JSON.stringify(await state())}`)
+  })
   await page.reload()
   await expect(page.locator("html")).toHaveAttribute("data-theme", want)
 })

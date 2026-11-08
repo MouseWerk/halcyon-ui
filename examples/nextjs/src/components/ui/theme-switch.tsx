@@ -33,8 +33,9 @@ export function ThemeSwitch({ reveal = true, size = "md", className, style, ...p
   function onClick() {
     const next = dark ? "light" : "dark"
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    const doc = document as Document & { startViewTransition?: (cb: () => Promise<void> | void) => { ready: Promise<void> } }
-    if (!reveal || reduced || !doc.startViewTransition || !ref.current) {
+    const doc = document as Document & { startViewTransition?: (cb: () => Promise<void> | void) => { ready: Promise<void>; finished?: Promise<void> } }
+    // No reveal when it can't be seen (background tab, headless) or isn't wanted.
+    if (!reveal || reduced || !doc.startViewTransition || !ref.current || document.visibilityState !== "visible") {
       applyTheme(next)
       return
     }
@@ -42,18 +43,18 @@ export function ThemeSwitch({ reveal = true, size = "md", className, style, ...p
     const x = r.left + r.width / 2
     const y = r.top + r.height / 2
     const end = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))
-    // let React commit the new knob position before the "new" snapshot is taken
-    let applied = false
-    const apply = () => { if (!applied) { applied = true; applyTheme(next) } }
-    let vt: { ready: Promise<void> }
+    // Make sure the click always lands, even if the engine skips or drops the update callback.
+    const ensure = () => { if (document.documentElement.dataset.theme !== next) applyTheme(next) }
+    let vt: { ready: Promise<void>; finished?: Promise<void> }
     try {
-      vt = doc.startViewTransition(() => { apply(); return new Promise<void>((r) => setTimeout(r, 0)) })
+      // let React commit the new knob position before the "new" snapshot is taken
+      vt = doc.startViewTransition(() => { applyTheme(next); return new Promise<void>((res) => setTimeout(res, 0)) })
     } catch {
-      apply() // a transition was already running, or the engine refused it
+      applyTheme(next) // a transition was already running, or the engine refused it
       return
     }
-    // Safety net: some engines skip the update callback; never leave the click without effect.
-    setTimeout(apply, 300)
+    setTimeout(ensure, 300)
+    vt.finished?.then(ensure, ensure)
     vt.ready
       .then(() => {
         document.documentElement.animate(
