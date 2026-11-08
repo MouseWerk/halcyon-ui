@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils"
 /** Rows are separate recessed strips that slide right and lift on hover. */
 export function Table({ className, ...props }: React.TableHTMLAttributes<HTMLTableElement>) {
   return (
-    <div className="-mx-1.5 overflow-x-auto max-sm:[mask-image:linear-gradient(to_right,black_82%,transparent)]">
+    <div tabIndex={0} role="region" aria-label={props["aria-label"] ?? "Table"} className="-mx-1.5 overflow-x-auto rounded-xl outline-offset-2 max-sm:[mask-image:linear-gradient(to_right,black_82%,transparent)]">
       <table className={cn("w-full min-w-[560px] border-separate border-spacing-x-0 border-spacing-y-1.5", className)} {...props} />
     </div>
   )

@@ -94,6 +94,7 @@ export interface MorphOptions {
 }
 
 export function createMorph(canvas: HTMLCanvasElement, initial: Glyph, opts: MorphOptions = {}) {
+  opts = { ...opts }
   const ctx = canvas.getContext("2d")!
   let size = 0, cell = 0, dpr = 1
   const max = Math.max(...Object.values(glyphs).map((g) => g.length)) + 8
@@ -151,14 +152,15 @@ export function createMorph(canvas: HTMLCanvasElement, initial: Glyph, opts: Mor
       p.a += (p.ta - p.a) * 0.14
       if (Math.abs(p.ta - p.a) > 0.01) moving = true
       if (p.a < 0.02) continue
-      ctx.globalAlpha = p.a
-      ctx.fillStyle = ink
-      ctx.beginPath(); ctx.arc(p.x, p.y, cell * 0.36, 0, Math.PI * 2); ctx.fill()
+      // halo first, then the core on top, so the dot stays crisp inside its glow
       if (ga > 0) {
         ctx.globalAlpha = p.a * ga
         ctx.fillStyle = glow
         ctx.beginPath(); ctx.arc(p.x, p.y, cell * 0.5, 0, Math.PI * 2); ctx.fill()
       }
+      ctx.globalAlpha = p.a
+      ctx.fillStyle = ink
+      ctx.beginPath(); ctx.arc(p.x, p.y, cell * 0.36, 0, Math.PI * 2); ctx.fill()
     }
     ctx.globalAlpha = 1
     if (moving) raf = requestAnimationFrame(frame)
@@ -178,6 +180,8 @@ export function createMorph(canvas: HTMLCanvasElement, initial: Glyph, opts: Mor
     /** Repaint, e.g. after a theme change. */
     redraw() { kick() },
     resize() { measure(); target(current, false) },
+    /** Change the halo strength without rebuilding. */
+    setGlow(a: number) { opts.glowAlpha = a; kick() },
     destroy() { cancelAnimationFrame(raf); running = false },
   }
 }

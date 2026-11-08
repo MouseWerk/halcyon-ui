@@ -20,6 +20,7 @@ import { Avatar } from "@/components/ui/avatar"
 import { Meter } from "@/components/ui/meter"
 import { glyphs, type GlyphName } from "@/lib/dot-matrix"
 import { moreDemos } from "./demos-more"
+import { newDemos } from "./demos-new"
 import { IconBag, IconBell, IconChart, IconDownload, IconGrid, IconSearch, IconUsers } from "./icons"
 
 export type Prop = { name: string; type: string; default?: string; description: string }
@@ -463,8 +464,9 @@ toast("Webhook endpoint failing", { tone: "bad" })`,
   },
 ]
 
-export const groups = ["Controls", "Forms", "Surfaces", "Overlays", "Data", "Feedback", "Navigation"] as const
+import { groups } from "./catalog"
+export { groups }
 
-export const demos: DemoEntry[] = [...baseDemos, ...moreDemos].sort(
+export const demos: DemoEntry[] = [...baseDemos, ...moreDemos, ...newDemos].sort(
   (a, b) => groups.indexOf(a.group) - groups.indexOf(b.group),
 )

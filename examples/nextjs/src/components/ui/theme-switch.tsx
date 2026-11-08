@@ -72,7 +72,7 @@ export function ThemeSwitch({ reveal = true, size = "md", className, style, ...p
         ["--k" as string]: `${s.k}px`,
         // Right = on (dark), left = off (light), like every switch.
         ["--tx" as string]: `${dark ? travel : 0}px`,
-        ["--tx-press" as string]: `${dark ? travel - s.pad * 1.6 : 0}px`,
+        ["--tx-press" as string]: `${dark ? travel - 8 : 0}px`,
         ...style,
       }}
       {...props}

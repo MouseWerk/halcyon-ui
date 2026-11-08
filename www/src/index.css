@@ -20,7 +20,8 @@
 .code-block .tk-s { color: var(--hc-ok); }
 .code-block .tk-c { color: var(--hc-muted); font-style: italic; }
 .code-block .tk-t { color: var(--hc-ink); font-weight: 600; }
-.code-block .tk-n { color: var(--hc-warn); }
+.code-block .tk-n { color: #7a6200; } /* readable amber on the light well */
+:is(.dark, [data-theme="dark"]) .code-block .tk-n { color: var(--hc-warn); }
 
 @keyframes marquee { to { transform: translateX(-50%); } }
 .animate-marquee { animation: marquee 40s linear infinite; }

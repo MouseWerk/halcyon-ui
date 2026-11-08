@@ -58,9 +58,11 @@ export function DotChart({
             key={`${c}-${row}-${k}`}
             cx={x0 + k * (r * 2 + gap)}
             cy={cy}
-            r={on && !shown ? 0 : r}
+            r={r}
             className={cn(
-              "transition-[r,fill] duration-[450ms] ease-spring",
+              // scale (not the r attribute) so the pop animates in every engine, Safari included
+              "origin-center transition-[scale,fill] duration-[450ms] ease-spring [transform-box:fill-box]",
+              on && !shown ? "scale-0" : "scale-100",
               on ? "fill-glow" : "fill-dot-off",
               isPeak && "drop-shadow-[0_0_3px_var(--hc-glow)]",
             )}
@@ -72,7 +74,7 @@ export function DotChart({
   }
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" className={cn("block h-auto w-full min-w-[520px]", className)} {...props}>
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Chart: ${labels.map((l, i) => `${l} ${format(values[i])}`).join(", ")}`} className={cn("block h-auto w-full min-w-[520px]", className)} {...props}>
       {Array.from({ length: Math.floor(rows / tickEvery) + 1 }, (_, i) => i * tickEvery).map((g) => (
         <text key={g} x={padL - 8} y={H - padB - g * rh + 3} textAnchor="end" className="fill-muted font-mono text-[11px]">
           {format(g * unit)}

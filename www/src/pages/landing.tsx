@@ -12,15 +12,16 @@ import { StatusLamp } from "@/components/ui/status-lamp"
 import { Segmented } from "@/components/ui/segmented"
 import { DotChart } from "@/components/ui/dot-chart"
 import { Nav, NavItem } from "@/components/ui/nav"
+import { Avatar } from "@/components/ui/avatar"
 import { Counter } from "@/components/ui/counter"
 import { toast } from "@/components/ui/toast"
 import { glyphs, type GlyphName } from "@/lib/dot-matrix"
 import { useTheme } from "@/hooks/use-theme"
 import { Code, Command } from "../site/code"
 import { NPX, REPO } from "../site/shell"
-import { demos, groups } from "../site/demos"
+import { catalog as demos, groups } from "../site/catalog"
 import { href } from "../router"
-import { IconArrow, IconBag, IconChart, IconGithub, IconGrid, IconUsers } from "../site/icons"
+import { IconArrow, IconBag, IconChart, IconGithub, IconGrid, IconServer, IconSettings, IconUsers } from "../site/icons"
 
 const wrap = "mx-auto w-full max-w-[1280px] px-[max(20px,env(safe-area-inset-left))]"
 
@@ -142,7 +143,7 @@ function SpringTile() {
       <button
         type="button"
         onClick={() => setN(n + 1)}
-        className="grid size-20 cursor-pointer place-items-center rounded-[22px] bg-surface shadow-key transition-[transform,box-shadow] duration-300 ease-spring active:scale-[.86] active:shadow-inset"
+        className="grid size-20 cursor-pointer place-items-center rounded-[22px] bg-surface shadow-key transition-[scale,box-shadow] duration-300 ease-spring active:scale-[.86] active:shadow-inset"
       >
         <Counter value={n} duration={400} className="text-3xl" />
       </button>
@@ -235,6 +236,55 @@ function Features() {
   )
 }
 
+const showcaseNav = [
+  { l: "Overview", i: <IconGrid /> },
+  { l: "Customers", i: <IconUsers /> },
+  { l: "Orders", i: <IconBag />, c: 12 },
+  { l: "Analytics", i: <IconChart /> },
+]
+
+/**
+ * Sidebar of the landing-page admin preview. Full height on desktop with the
+ * workspace switcher on top and usage + account pinned to the bottom; a
+ * scrollable key rail on tablets and phones.
+ */
+function ShowcaseSidebar({ active, onSelect }: { active: string; onSelect: (l: string) => void }) {
+  return (
+    <Card animate={false} className="flex min-w-0 flex-col gap-4 p-2 lg:p-3">
+      <div className="hidden items-center gap-2.5 rounded-[14px] px-1.5 pt-1 lg:flex">
+        <span className="grid size-9 shrink-0 place-items-center rounded-[11px] bg-bg shadow-inset-sm"><DotIcon icon="diamond" size={18} /></span>
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-[13.5px] font-semibold">Halcyon Labs</div>
+          <div className="font-mono text-[11px] text-muted">production</div>
+        </div>
+        <StatusLamp tone="ok" />
+      </div>
+      <div className="hidden px-2 font-mono text-[10px] uppercase tracking-[.16em] text-muted lg:block">Workspace</div>
+      <Nav aria-label="Preview navigation" className="max-lg:flex-row max-lg:overflow-x-auto max-lg:scrollbar-none">
+        {showcaseNav.map((x) => (
+          <NavItem key={x.l} icon={x.i} count={x.c} active={active === x.l} onClick={() => onSelect(x.l)} className="max-lg:w-auto max-lg:shrink-0">{x.l}</NavItem>
+        ))}
+        <div className="mx-2 my-1 hidden h-px bg-line lg:block" />
+        <NavItem icon={<IconServer />} active={active === "Infrastructure"} onClick={() => onSelect("Infrastructure")} className="max-lg:w-auto max-lg:shrink-0">Infrastructure</NavItem>
+        <NavItem icon={<IconSettings />} active={active === "Settings"} onClick={() => onSelect("Settings")} className="max-lg:w-auto max-lg:shrink-0">Settings</NavItem>
+      </Nav>
+      <div className="mt-auto hidden flex-col gap-3 lg:flex">
+        <div className="flex flex-col gap-2 rounded-[16px] bg-bg p-3 shadow-inset-sm">
+          <div className="flex justify-between text-xs"><span className="text-muted">Storage</span><span className="font-mono">64 / 100 GB</span></div>
+          <Meter value={64} segments={14} />
+        </div>
+        <div className="flex items-center gap-2.5 rounded-[16px] bg-raise p-2.5 shadow-raised-sm">
+          <Avatar initials="MK" />
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-[13px] font-medium">Maurice K.</div>
+            <div className="truncate text-xs text-muted">Owner, Pro plan</div>
+          </div>
+        </div>
+      </div>
+    </Card>
+  )
+}
+
 function Showcase() {
   const [r, setR] = React.useState<"12m" | "7d">("12m")
   const [active, setActive] = React.useState("Overview")
@@ -254,15 +304,8 @@ function Showcase() {
       </div>
 
       <div className="rounded-[28px] bg-bg p-3 shadow-inset sm:p-5">
-        <div className="grid gap-5 lg:grid-cols-[220px_minmax(0,1fr)]">
-          <Card animate={false} className="hidden flex-col gap-4 self-start p-4 lg:flex">
-            <div className="px-1.5 font-mono text-[10.5px] uppercase tracking-[.14em] text-muted">Workspace</div>
-            <Nav>
-              {[["Overview", <IconGrid key="a" />], ["Customers", <IconUsers key="b" />], ["Orders", <IconBag key="c" />], ["Analytics", <IconChart key="d" />]].map(([l, i]) => (
-                <NavItem key={l as string} icon={i} active={active === l} onClick={() => setActive(l as string)}>{l}</NavItem>
-              ))}
-            </Nav>
-          </Card>
+        <div className="grid gap-5 lg:grid-cols-[232px_minmax(0,1fr)]">
+          <ShowcaseSidebar active={active} onSelect={setActive} />
           <div className="flex min-w-0 flex-col gap-5">
             <div className="grid gap-5 sm:grid-cols-3">
               <Stat label="Revenue" prefix="$" value={48.2} decimals={1} suffix="k" delta="+12.4%" spark={[18, 16, 20, 15, 19, 22, 21, 24, 23, 27]} note="sample" />

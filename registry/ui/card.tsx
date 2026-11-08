@@ -14,7 +14,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
     <div
       ref={ref}
       className={cn(
-        "min-w-0 rounded-hc p-5 transition-[background-color,box-shadow,transform] duration-500 ease-out-soft",
+        "min-w-0 rounded-hc p-5 transition-[background-color,box-shadow,translate,scale] duration-500 ease-out-soft",
         surface === "raised" ? "bg-surface shadow-raised" : "bg-bg shadow-inset",
         animate && "animate-hc-rise",
         className,

@@ -49,49 +49,66 @@ export function useOpenState(open?: boolean, defaultOpen = false, onOpenChange?:
   return [value, set] as const
 }
 
+/*
+ * Open overlays form a stack. Only the top-most one reacts to Escape and
+ * outside clicks, so a Select or Popover inside a Dialog closes on its own
+ * without taking the Dialog down with it.
+ */
+const layers: object[] = []
+
 /** Close on Escape and on pointer down outside the given elements. */
 export function useDismiss(open: boolean, onClose: () => void, refs: React.RefObject<HTMLElement | null>[], { outside = true } = {}) {
   const close = React.useRef(onClose)
   close.current = onClose
+  const refList = React.useRef(refs)
+  refList.current = refs
   React.useEffect(() => {
     if (!open) return
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") { e.stopPropagation(); close.current() } }
+    const layer = {}
+    layers.push(layer)
+    const isTop = () => layers[layers.length - 1] === layer
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape" || !isTop()) return
+      e.stopPropagation()
+      close.current()
+    }
     const onDown = (e: PointerEvent) => {
-      if (!outside) return
+      if (!outside || !isTop()) return
       const t = e.target as Node
-      if (refs.some((r) => r.current?.contains(t))) return
+      if (refList.current.some((r) => r.current?.contains(t))) return
       close.current()
     }
     document.addEventListener("keydown", onKey)
     document.addEventListener("pointerdown", onDown)
     return () => {
+      layers.splice(layers.indexOf(layer), 1)
       document.removeEventListener("keydown", onKey)
       document.removeEventListener("pointerdown", onDown)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, outside])
 }
 
-/** Lock page scroll while a modal is open (keeps layout from jumping). */
+let lockCount = 0
+let lockPrev: { overflow: string; pad: string } | null = null
+
+/** Lock page scroll while a modal is open (keeps layout from jumping). Nested locks are counted. */
 export function useScrollLock(locked: boolean) {
   useIsoLayoutEffect(() => {
     if (!locked) return
     const { body, documentElement: html } = document
-    // Nested modals: only the first lock does the work.
-    const count = Number(html.dataset.hcLocks ?? 0)
-    html.dataset.hcLocks = String(count + 1)
-    if (count > 0) return () => { html.dataset.hcLocks = String(Number(html.dataset.hcLocks) - 1) }
-
-    const gap = window.innerWidth - html.clientWidth
-    // halcyon.css sets scrollbar-gutter: stable, which keeps the space reserved.
-    const gutterStable = getComputedStyle(html).scrollbarGutter?.includes("stable")
-    const prev = { overflow: html.style.overflow, pad: body.style.paddingRight }
-    html.style.overflow = "hidden"
-    if (gap > 0 && !gutterStable) body.style.paddingRight = `${gap}px`
+    if (lockCount++ === 0) {
+      const gap = window.innerWidth - html.clientWidth
+      // halcyon.css sets scrollbar-gutter: stable, which keeps the space reserved.
+      const gutterStable = getComputedStyle(html).scrollbarGutter?.includes("stable")
+      lockPrev = { overflow: html.style.overflow, pad: body.style.paddingRight }
+      html.style.overflow = "hidden"
+      if (gap > 0 && !gutterStable) body.style.paddingRight = `${gap}px`
+    }
     return () => {
-      html.style.overflow = prev.overflow
-      body.style.paddingRight = prev.pad
-      delete html.dataset.hcLocks
+      if (--lockCount > 0 || !lockPrev) return
+      html.style.overflow = lockPrev.overflow
+      body.style.paddingRight = lockPrev.pad
+      lockPrev = null
     }
   }, [locked])
 }

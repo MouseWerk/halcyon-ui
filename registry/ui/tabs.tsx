@@ -4,6 +4,7 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 type Ctx = { value: string; set: (v: string) => void; base: string }
+const useIsoLayoutEffect = typeof window === "undefined" ? React.useEffect : React.useLayoutEffect
 const TabsCtx = React.createContext<Ctx | null>(null)
 const useTabs = () => {
   const c = React.useContext(TabsCtx)
@@ -39,7 +40,7 @@ export function TabsList({ className, children, ...props }: React.HTMLAttributes
     const el = ref.current?.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]')
     if (el) setThumb({ left: el.offsetLeft, width: el.offsetWidth, ready: true })
   }, [])
-  React.useLayoutEffect(place, [value, place])
+  useIsoLayoutEffect(place, [value, place])
   React.useEffect(() => {
     const ro = new ResizeObserver(place)
     if (ref.current) ro.observe(ref.current)

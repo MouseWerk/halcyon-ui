@@ -15,7 +15,9 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, autoGrow, counter = true, maxLength, onChange, value, defaultValue, ...props }, fwd) => {
     const ref = React.useRef<HTMLTextAreaElement>(null)
     React.useImperativeHandle(fwd, () => ref.current!)
-    const [len, setLen] = React.useState(String(value ?? defaultValue ?? "").length)
+    const [typed, setLen] = React.useState(String(value ?? defaultValue ?? "").length)
+    // Controlled: follow the value prop, also when the parent changes it.
+    const len = value !== undefined ? String(value).length : typed
 
     const grow = React.useCallback(() => {
       const el = ref.current

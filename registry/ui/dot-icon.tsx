@@ -22,24 +22,40 @@ export function DotIcon({ icon, size = 24, glow = 0.55, className, style, ...pro
   const morph = React.useRef<ReturnType<typeof createMorph> | null>(null)
   const g = typeof icon === "string" ? glyphs[icon] : icon
 
+  // Content key: an inline bitmap([...]) is a new array every render but the same glyph.
+  const sig = g.map((p) => p.join(",")).join(";")
+  const shownSig = React.useRef(sig)
+
   React.useEffect(() => {
     const canvas = ref.current!
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     morph.current = createMorph(canvas, g, { glowAlpha: glow, reducedMotion: reduced })
+    shownSig.current = sig
     const obs = new MutationObserver(() => morph.current?.redraw())
     obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme"] })
     const mq = window.matchMedia("(prefers-color-scheme: dark)")
     const onMq = () => morph.current?.redraw()
     mq.addEventListener("change", onMq)
-    return () => { obs.disconnect(); mq.removeEventListener("change", onMq); morph.current?.destroy() }
+    return () => { obs.disconnect(); mq.removeEventListener("change", onMq); morph.current?.destroy(); morph.current = null }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const first = React.useRef(true)
+  // Morph only when the glyph really changes (not on mount, not on StrictMode re-runs).
   React.useEffect(() => {
-    if (first.current) { first.current = false; return }
+    if (shownSig.current === sig) return
+    shownSig.current = sig
     morph.current?.to(g)
-  }, [g])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sig])
+
+  // Re-measure the canvas when the rendered size changes.
+  const firstSize = React.useRef(true)
+  React.useEffect(() => {
+    if (firstSize.current) { firstSize.current = false; return }
+    morph.current?.resize()
+  }, [size])
+
+  React.useEffect(() => { morph.current?.setGlow(glow) }, [glow])
 
   return (
     <canvas

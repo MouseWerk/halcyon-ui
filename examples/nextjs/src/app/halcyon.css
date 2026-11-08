@@ -16,17 +16,17 @@
   --hc-surface: #ecebe8;
   --hc-raise: #f6f5f2;
   --hc-ink: #262520;
-  --hc-muted: #7b7973;
+  --hc-muted: #65635d;
   --hc-line: rgb(38 37 32 / 0.08);
   --hc-glow: #ffa726;
-  --hc-glow-ink: #b06a00;
+  --hc-glow-ink: #925700;
   --hc-glow-soft: rgb(255 167 38 / 0.38);
   --hc-sh-dark: rgb(92 82 60 / 0.2);
   --hc-sh-light: rgb(255 255 255 / 0.95);
   --hc-dot-off: rgb(38 37 32 / 0.1);
-  --hc-ok: #23834b;
+  --hc-ok: #1b6e3d;
   --hc-warn: #b8960a;
-  --hc-bad: #d4483b;
+  --hc-bad: #b0362b;
   --hc-radius: 20px;
   color-scheme: light;
 }
@@ -38,7 +38,7 @@
   --hc-surface: #15161c;
   --hc-raise: #262733;
   --hc-ink: #e8e8f1;
-  --hc-muted: #878899;
+  --hc-muted: #9596a7;
   --hc-line: rgb(232 232 241 / 0.09);
   --hc-glow: #8f8cff;
   --hc-glow-ink: #b4b2ff;
@@ -201,7 +201,9 @@
 }
 
 /* Keyframes used through arbitrary animate-[...] classes. */
-@keyframes hc-shimmer { to { transform: translateX(100%); } }
+@keyframes hc-shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+@keyframes hc-sweep { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+@keyframes hc-grow { from { scale: 0 1; } to { scale: 1 1; } }
 @keyframes hc-orbit { 0% { opacity: 1; scale: 1; } 100% { opacity: 0.12; scale: 0.6; } }
 
 /* Circular theme reveal used by <ThemeSwitch /> (View Transitions API). */
