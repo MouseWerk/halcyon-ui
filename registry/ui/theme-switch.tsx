@@ -59,6 +59,7 @@ export function ThemeSwitch({ reveal = true, size = "md", className, style, ...p
       ref={ref}
       type="button"
       role="switch"
+      data-hc-keep-motion=""
       aria-checked={dark}
       aria-label="Dark mode"
       onClick={onClick}

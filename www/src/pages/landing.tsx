@@ -15,7 +15,7 @@ import { Nav, NavItem } from "@/components/ui/nav"
 import { Avatar } from "@/components/ui/avatar"
 import { Counter } from "@/components/ui/counter"
 import { toast } from "@/components/ui/toast"
-import { glyphs, type GlyphName } from "@/lib/dot-matrix"
+import { GRID, glyphs, type GlyphName } from "@/lib/dot-matrix"
 import { useTheme } from "@/hooks/use-theme"
 import { Code, Command } from "../site/code"
 import { NPX, REPO } from "../site/shell"
@@ -34,7 +34,7 @@ function Hero() {
   return (
     <section className="relative overflow-hidden">
       <div className="dot-field pointer-events-none absolute inset-0 [mask-image:radial-gradient(70%_60%_at_50%_40%,black,transparent)]" />
-      <div className="pointer-events-none absolute left-1/2 top-[38%] size-[620px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-glow-soft opacity-40 blur-[120px] transition-colors duration-700" />
+      <div className="pointer-events-none absolute left-1/2 top-[38%] size-[900px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(closest-side,var(--hc-glow-soft),transparent)] opacity-50" />
 
       <div className={cn(wrap, "relative flex flex-col items-center pb-16 pt-14 text-center sm:pt-20")}>
         <a href={href("/docs/components/theme-switch")} className="animate-hc-rise">
@@ -104,15 +104,66 @@ function Hero() {
   )
 }
 
+/**
+ * Renders each glyph once into a small image (re-rendered on theme change).
+ * The marquee then shows plain <img> tiles instead of 80 live canvases.
+ */
+function useGlyphSprites(names: GlyphName[], size: number) {
+  const { theme } = useTheme()
+  const [urls, setUrls] = React.useState<Partial<Record<GlyphName, string>>>({})
+  React.useEffect(() => {
+    const cs = getComputedStyle(document.documentElement)
+    const ink = cs.getPropertyValue("--hc-ink").trim() || "#222"
+    const glow = cs.getPropertyValue("--hc-glow").trim() || "#ffa726"
+    const dpr = Math.min(2, window.devicePixelRatio || 1)
+    const cell = size / GRID
+    const out: Partial<Record<GlyphName, string>> = {}
+    for (const n of names) {
+      const c = document.createElement("canvas")
+      c.width = c.height = Math.round(size * dpr)
+      const ctx = c.getContext("2d")!
+      ctx.scale(dpr, dpr)
+      for (const [x, y] of glyphs[n]) {
+        const cx = (x + 0.5) * cell, cy = (y + 0.5) * cell
+        ctx.globalAlpha = 1; ctx.fillStyle = ink
+        ctx.beginPath(); ctx.arc(cx, cy, cell * 0.36, 0, Math.PI * 2); ctx.fill()
+        ctx.globalAlpha = 0.35; ctx.fillStyle = glow
+        ctx.beginPath(); ctx.arc(cx, cy, cell * 0.5, 0, Math.PI * 2); ctx.fill()
+      }
+      out[n] = c.toDataURL()
+    }
+    setUrls(out)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [theme, size])
+  return urls
+}
+
+/** Plays a CSS animation only while the element is on screen. */
+function useOnScreen<T extends Element>() {
+  const ref = React.useRef<T>(null)
+  const [on, setOn] = React.useState(false)
+  React.useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const io = new IntersectionObserver(([e]) => setOn(e.isIntersecting), { rootMargin: "100px" })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+  return [ref, on] as const
+}
+
 function GlyphMarquee() {
   const names = Object.keys(glyphs) as GlyphName[]
-  const row = [...names, ...names, ...names]
+  const sprites = useGlyphSprites(names, 30)
+  const [ref, onScreen] = useOnScreen<HTMLDivElement>()
+  // one copy must be wider than the widest screen (ultrawide 3440px) for a seamless loop
+  const row = [...names, ...names, ...names, ...names]
   return (
-    <div className="relative overflow-hidden border-y border-line py-6 [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
-      <div className="animate-marquee flex w-max gap-6">
+    <div ref={ref} className="relative overflow-hidden border-y border-line py-6 [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
+      <div className="animate-marquee flex w-max gap-6 will-change-transform" style={{ animationPlayState: onScreen ? "running" : "paused" }}>
         {[...row, ...row].map((n, i) => (
           <div key={i} className="grid size-16 shrink-0 place-items-center rounded-[18px] bg-bg shadow-inset-sm">
-            <DotIcon icon={n} size={30} glow={0.35} />
+            {sprites[n] ? <img src={sprites[n]} alt="" width={30} height={30} decoding="async" draggable={false} /> : <span className="size-[30px]" />}
           </div>
         ))}
       </div>
@@ -214,7 +265,7 @@ const features: { title: string; text: string; tile: React.ReactNode; span: stri
 
 function Features() {
   return (
-    <section className={cn(wrap, "mt-28")}>
+    <section className={cn(wrap, "mt-28 cv-auto")}>
       <div className="mb-10 flex flex-col gap-3">
         <Eyebrow>Why Halcyon</Eyebrow>
         <h2 className="m-0 max-w-[22ch] text-balance text-[clamp(30px,4vw,46px)] font-bold leading-[1.05] tracking-[-.035em]">
@@ -292,7 +343,7 @@ function Showcase() {
     ? { labels: ["Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"], values: [21, 24, 22, 27, 29, 31, 30, 34, 37, 36, 42, 48], unit: 4 }
     : { labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], values: [0.9, 1.6, 1.8, 1.7, 2.1, 2.4, 1.3], unit: 0.2 }
   return (
-    <section className={cn(wrap, "mt-28")}>
+    <section className={cn(wrap, "mt-28 cv-auto")}>
       <div className="mb-10 flex flex-wrap items-end gap-6">
         <div className="flex flex-col gap-3">
           <Eyebrow>Example</Eyebrow>
@@ -328,7 +379,7 @@ function Showcase() {
 
 function ComponentGrid() {
   return (
-    <section className={cn(wrap, "mt-28")}>
+    <section className={cn(wrap, "mt-28 cv-auto")}>
       <div className="mb-10 flex flex-col gap-3">
         <Eyebrow>Components</Eyebrow>
         <h2 className="m-0 text-balance text-[clamp(30px,4vw,46px)] font-bold leading-[1.05] tracking-[-.035em]">
@@ -363,7 +414,7 @@ function ComponentGrid() {
 
 function FinalCta() {
   return (
-    <section className={cn(wrap, "mt-28")}>
+    <section className={cn(wrap, "mt-28 cv-auto")}>
       <Card animate={false} className="relative overflow-hidden px-6 py-14 text-center sm:px-14">
         <div className="dot-field pointer-events-none absolute inset-0 opacity-70 [mask-image:radial-gradient(60%_80%_at_50%_100%,black,transparent)]" />
         <div className="relative flex flex-col items-center gap-6">

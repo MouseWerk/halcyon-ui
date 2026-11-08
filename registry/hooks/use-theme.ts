@@ -27,14 +27,33 @@ function snapshot(): Theme {
   return stored() ?? systemTheme()
 }
 
+/**
+ * Turn CSS transitions off for one paint while the theme flips. Otherwise
+ * every surface animates its colors and shadows at once, which stutters on
+ * large screens. Elements inside [data-hc-keep-motion] (the theme switch)
+ * keep animating.
+ */
+function suppressTransitions() {
+  const style = document.createElement("style")
+  const sel = ":not([data-hc-keep-motion]):not([data-hc-keep-motion] *)"
+  style.textContent = `*${sel},*${sel}::before,*${sel}::after{transition:none!important}`
+  document.head.appendChild(style)
+  return () => {
+    void getComputedStyle(document.body).opacity // flush styles with transitions off
+    requestAnimationFrame(() => requestAnimationFrame(() => style.remove()))
+  }
+}
+
 export function applyTheme(theme: Theme, persist = true) {
   const root = document.documentElement
+  const restore = suppressTransitions()
   root.dataset.theme = theme
   root.classList.toggle("dark", theme === "dark")
   root.style.colorScheme = theme
   if (persist) {
     try { localStorage.setItem(THEME_STORAGE_KEY, theme) } catch { /* storage blocked */ }
   }
+  restore()
 }
 
 function subscribe(cb: () => void) {
