@@ -2,10 +2,10 @@
 /**
  * halcyon - copy Halcyon UI components into your project (shadcn-style).
  *
- *   npx github:mauricekleindienst/halcyon-ui init
- *   npx github:mauricekleindienst/halcyon-ui add theme-switch stat dot-chart
- *   npx github:mauricekleindienst/halcyon-ui add --all
- *   npx github:mauricekleindienst/halcyon-ui list
+ *   npx github:MouseWerk/halcyon-ui init
+ *   npx github:MouseWerk/halcyon-ui add theme-switch stat dot-chart
+ *   npx github:MouseWerk/halcyon-ui add --all
+ *   npx github:MouseWerk/halcyon-ui list
  *
  * No runtime dependencies: Node 18+ only.
  */
@@ -20,7 +20,7 @@ const REG_DIR = path.resolve(here, "..", "registry")
 const registry = JSON.parse(fs.readFileSync(path.join(REG_DIR, "registry.json"), "utf8"))
 const cwd = process.cwd()
 const CONFIG = path.join(cwd, "halcyon.json")
-const NPX_CMD = "npx github:mauricekleindienst/halcyon-ui"
+const NPX_CMD = "npx github:MouseWerk/halcyon-ui"
 
 const c = {
   dim: (s) => `\x1b[2m${s}\x1b[0m`,

@@ -9,10 +9,10 @@ import { Sheet } from "@/components/ui/sheet"
 import { CommandPalette } from "@/components/ui/command"
 import { catalog } from "./catalog"
 
-export const REPO = "https://github.com/mauricekleindienst/halcyon-ui"
-export const NPX = "npx github:mauricekleindienst/halcyon-ui"
+export const REPO = "https://github.com/MouseWerk/halcyon-ui"
+export const NPX = "npx github:MouseWerk/halcyon-ui"
 /** shadcn-compatible registry (built into /r on deploy). */
-export const SHADCN_REGISTRY = "https://mauricekleindienst.github.io/halcyon-ui/r"
+export const SHADCN_REGISTRY = "https://mousewerk.github.io/halcyon-ui/r"
 
 export function Logo({ className }: { className?: string }) {
   const [hover, setHover] = React.useState(false)
@@ -51,7 +51,7 @@ export function Header({ route }: { route: string }) {
     <header
       className={cn(
         "sticky top-0 z-40 transition-[background-color,box-shadow,backdrop-filter] duration-300",
-        scrolled && "bg-bg/80 shadow-[0_1px_0_var(--hc-line)] backdrop-blur-xl",
+        scrolled && "bg-bg/95 shadow-[0_1px_0_var(--hc-line)]",
       )}
     >
       <div className="mx-auto flex h-[72px] max-w-[1280px] items-center gap-6 px-[max(20px,env(safe-area-inset-left))]">

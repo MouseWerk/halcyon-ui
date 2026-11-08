@@ -8,9 +8,9 @@
 **Tactile React components you copy into your project.**
 Soft raised and inset surfaces, dot-matrix icons, a glow that shifts from amber to violet, and springy motion.
 
-[Documentation](https://mauricekleindienst.github.io/halcyon-ui/) &nbsp;&middot;&nbsp;
-[Components](https://mauricekleindienst.github.io/halcyon-ui/#/docs/components/theme-switch) &nbsp;&middot;&nbsp;
-[Dashboard example](https://mauricekleindienst.github.io/halcyon-ui/#/examples/dashboard)
+[Documentation](https://mousewerk.github.io/halcyon-ui/) &nbsp;&middot;&nbsp;
+[Components](https://mousewerk.github.io/halcyon-ui/#/docs/components/theme-switch) &nbsp;&middot;&nbsp;
+[Dashboard example](https://mousewerk.github.io/halcyon-ui/#/examples/dashboard)
 
 ![React](https://img.shields.io/badge/React-18%20%7C%2019-1c1d25?style=flat-square&labelColor=15161c)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v4-1c1d25?style=flat-square&labelColor=15161c)
@@ -38,7 +38,7 @@ What makes it different is the design language:
 ## Quick start
 
 ```bash
-npx github:mauricekleindienst/halcyon-ui init
+npx github:MouseWerk/halcyon-ui init
 ```
 
 `init` detects your framework (Next.js, Vite, React Router / Remix, Astro), writes `halcyon.json`, copies the design tokens, the `cn()` helper and the theme hook, adds the token import to your global CSS and installs `clsx` and `tailwind-merge`.
@@ -46,9 +46,9 @@ npx github:mauricekleindienst/halcyon-ui init
 Then add components:
 
 ```bash
-npx github:mauricekleindienst/halcyon-ui add theme-switch stat dot-chart
-npx github:mauricekleindienst/halcyon-ui add --all
-npx github:mauricekleindienst/halcyon-ui list
+npx github:MouseWerk/halcyon-ui add theme-switch stat dot-chart
+npx github:MouseWerk/halcyon-ui add --all
+npx github:MouseWerk/halcyon-ui list
 ```
 
 Dependencies between components are resolved for you. Existing files are never overwritten unless you pass `--overwrite`.
@@ -58,13 +58,13 @@ Dependencies between components are resolved for you. Existing files are never o
 Every component is also a shadcn registry item, so it installs straight into an existing shadcn/ui project. The tokens are merged into your CSS automatically:
 
 ```bash
-npx shadcn@latest add https://mauricekleindienst.github.io/halcyon-ui/r/sidebar.json
+npx shadcn@latest add https://mousewerk.github.io/halcyon-ui/r/sidebar.json
 ```
 
 Or register the namespace once in `components.json` and use short names:
 
 ```json
-{ "registries": { "@halcyon": "https://mauricekleindienst.github.io/halcyon-ui/r/{name}.json" } }
+{ "registries": { "@halcyon": "https://mousewerk.github.io/halcyon-ui/r/{name}.json" } }
 ```
 
 ```bash
@@ -259,7 +259,7 @@ Keyboard support follows the WAI-ARIA patterns: arrow keys in tabs, radio groups
 ## Develop
 
 ```bash
-git clone https://github.com/mauricekleindienst/halcyon-ui
+git clone https://github.com/MouseWerk/halcyon-ui
 cd halcyon-ui/www
 npm install
 npm run dev        # docs site on http://localhost:5173

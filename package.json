@@ -17,7 +17,7 @@
   "keywords": ["react", "tailwind", "components", "ui", "shadcn", "neumorphism", "dot-matrix"],
   "repository": {
     "type": "git",
-    "url": "https://github.com/mauricekleindienst/halcyon-ui.git"
+    "url": "https://github.com/MouseWerk/halcyon-ui.git"
   },
   "scripts": {
     "dev": "npm --prefix www run dev",
