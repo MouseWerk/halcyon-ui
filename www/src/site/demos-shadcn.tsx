@@ -171,8 +171,33 @@ const orderColumns: DataTableColumn<Order>[] = [
   { key: "amount", header: "Amount", sortable: true, align: "right", cell: (r) => `$${r.amount.toLocaleString("en-US")}` },
 ]
 
+type App = { id: string; name: string; vendor: string; parent: string | null; seats: number }
+const apps: App[] = [
+  { id: "m365", name: "Microsoft 365", vendor: "Microsoft", parent: null, seats: 250 },
+  { id: "word", name: "Word", vendor: "Microsoft", parent: "m365", seats: 240 },
+  { id: "excel", name: "Excel", vendor: "Microsoft", parent: "m365", seats: 210 },
+  { id: "teams", name: "Teams", vendor: "Microsoft", parent: "m365", seats: 248 },
+  { id: "adobe", name: "Creative Cloud", vendor: "Adobe", parent: null, seats: 18 },
+  { id: "ps", name: "Photoshop", vendor: "Adobe", parent: "adobe", seats: 12 },
+  { id: "ai", name: "Illustrator", vendor: "Adobe", parent: "adobe", seats: 9 },
+  { id: "jira", name: "Jira", vendor: "Atlassian", parent: null, seats: 60 },
+]
+const appColumns: DataTableColumn<App>[] = [
+  { key: "name", header: "Application", sortable: true, cell: (r) => <span className="font-medium">{r.name}</span> },
+  { key: "vendor", header: "Vendor", sortable: true, hideOnMobile: true },
+  { key: "seats", header: "Seats", sortable: true, align: "right" },
+]
+
 function DataTableDemo() {
-  return <DataTable className="w-full" aria-label="Orders" data={orders} columns={orderColumns} rowId={(r) => r.id} selectable pageSize={5} searchPlaceholder="Search orders" />
+  return (
+    <div className="flex w-full flex-col gap-8">
+      <DataTable className="w-full" aria-label="Orders" data={orders} columns={orderColumns} rowId={(r) => r.id} selectable pageSize={5} searchPlaceholder="Search orders" />
+      <div className="flex flex-col gap-2">
+        <span className="font-mono text-[10.5px] uppercase tracking-[.14em] text-muted">Tree mode: child rows fold under their parent</span>
+        <DataTable className="w-full" aria-label="Applications" data={apps} columns={appColumns} rowId={(r) => r.id} parentId={(r) => r.parent} pageSize={0} searchPlaceholder="Search applications" initialSort={{ key: "name", dir: "asc" }} />
+      </div>
+    </div>
+  )
 }
 
 function DatePickerDemo() {
@@ -670,7 +695,7 @@ export const shadcnDemos: DemoEntry[] = [
   },
   {
     name: "data-table", title: "Data Table", group: "Data",
-    description: "Sorting, search, row selection and pagination on top of the Halcyon table style. Columns can hide on phones; sort state is announced with aria-sort.",
+    description: "Sorting, search, row selection, pagination and an optional one-level tree (child rows fold under their parent) on top of the Halcyon table style. Columns can hide on phones; sort state is announced with aria-sort.",
     Demo: DataTableDemo,
     usage: `import { DataTable, type DataTableColumn } from "@/components/ui/data-table"
 
@@ -687,6 +712,7 @@ const columns: DataTableColumn<Order>[] = [
       { name: "selectable / onSelectionChange", type: "boolean / (ids) => void", description: "Checkbox column. The selection only ever contains rows that are still visible after search and filters." },
       { name: "renderCard", type: "(row) => ReactNode", description: "Phone layout: each row as a card below the sm breakpoint." },
       { name: "pageSize", type: "number", default: "10", description: "0 shows all rows." },
+      { name: "parentId", type: "(row) => string | null", description: "Tree mode: child rows fold under their parent behind a toggle (collapsed by default); sorting keeps children with their parent, pages count top-level rows, search opens matches." },
       { name: "toolbar / empty / onRowClick", type: "ReactNode / ReactNode / (row) => void", description: "Extras." },
     ],
   },

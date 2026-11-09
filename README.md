@@ -178,7 +178,7 @@ Everything shadcn/ui ships has a Halcyon counterpart, from Alert Dialog to Sideb
 | `chart` | Area, line, bar and donut charts in plain SVG with tooltips and colour-blind-safe slots. |
 | `collapsible` | Show/hide a section with animated height. |
 | `context-menu` | Right-click / long-press / Shift+F10 menu at the pointer. |
-| `data-table` | Sorting, search, row selection and pagination. |
+| `data-table` | Sorting, search, row selection, pagination and a collapsible one-level tree. |
 | `date-picker` | Calendar in a popover, single day or range. |
 | `drawer` | Bottom drawer that follows your finger and dismisses on swipe. |
 | `field` | Label, control, description and error wired with ids and aria attributes. |

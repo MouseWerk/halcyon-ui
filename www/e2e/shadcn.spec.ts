@@ -89,11 +89,13 @@ test("context menu opens on long-press (touch)", async ({ page }, info) => {
 
 test("data table sorts, searches, selects and paginates", async ({ page }) => {
   const d = await openComponent(page, "data-table")
-  const rows = d.locator("tbody tr")
+  // the page also shows the tree-mode table; scope to the orders table
+  const orders = d.getByRole("region", { name: "Orders" })
+  const rows = orders.locator("tbody tr")
   await expect(rows).toHaveCount(5)
   await expect(d).toContainText("1–5 of 12")
   await d.getByRole("button", { name: "Amount" }).click()
-  await expect(d.locator('th[aria-sort="ascending"]')).toContainText("Amount")
+  await expect(orders.locator('th[aria-sort="ascending"]')).toContainText("Amount")
   await expect(rows.first()).toContainText("$49")
   await d.getByRole("button", { name: "Amount" }).click()
   await expect(rows.first()).toContainText("$9,100")
@@ -104,6 +106,32 @@ test("data table sorts, searches, selects and paginates", async ({ page }) => {
   await d.getByRole("searchbox", { name: "Search orders" }).fill("")
   await d.getByRole("button", { name: "Next page" }).click()
   await expect(d).toContainText("6–10 of 12")
+})
+
+test("data table tree mode: children fold under their parent, collapsed by default", async ({ page }) => {
+  const d = await openComponent(page, "data-table")
+  const t = d.getByRole("region", { name: "Applications" })
+  const row = (name: string) => t.locator("tbody tr").filter({ hasText: new RegExp(`^${name}`) })
+  // collapsed: only top-level rows
+  await expect(t.locator("tbody tr")).toHaveCount(3)
+  const toggle = row("Microsoft 365").getByRole("button", { name: "Expand 3 child rows" })
+  await expect(toggle).toHaveAttribute("aria-expanded", "false")
+  await toggle.click()
+  await expect(t.locator('tbody tr[data-depth="1"]')).toHaveCount(3)
+  // children stay right after their parent, in both sort directions
+  const names = () => t.locator("tbody tr").evaluateAll((trs) => trs.map((tr) => (tr.querySelector("td")?.textContent ?? "").trim()))
+  const ok = async () => { const n = await names(); const i = n.indexOf("Microsoft 365"); return ["Excel", "Teams", "Word"].every((c) => { const j = n.indexOf(c); return j > i && j <= i + 3 }) }
+  await expect.poll(ok).toBe(true)
+  await t.getByRole("button", { name: "Application" }).click()
+  await expect.poll(ok).toBe(true)
+  await row("Microsoft 365").getByRole("button", { name: "Collapse 3 child rows" }).click()
+  await expect(t.locator('tbody tr[data-depth="1"]')).toHaveCount(0)
+  // search opens matching children; a child whose parent does not match stands alone
+  await d.getByRole("searchbox", { name: "Search applications" }).fill("photo")
+  await expect(t.locator("tbody tr")).toHaveCount(1)
+  await expect(row("Photoshop")).toHaveAttribute("data-depth", "0")
+  await d.getByRole("searchbox", { name: "Search applications" }).fill("adobe")
+  await expect(row("Photoshop")).toHaveAttribute("data-depth", "1")
 })
 
 test("date picker picks a day and a range", async ({ page }) => {

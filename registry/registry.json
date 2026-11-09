@@ -463,7 +463,7 @@
       ]
     },
     "data-table": {
-      "description": "Table with sorting, search, row selection and pagination.",
+      "description": "Table with sorting, search, row selection, pagination and an optional one-level tree (child rows fold under their parent).",
       "files": [
         "ui/data-table.tsx"
       ],

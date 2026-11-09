@@ -10,8 +10,8 @@ export interface DataTableColumn<T> {
   header: React.ReactNode
   /** Value used for sorting and filtering. Defaults to row[key]. */
   accessor?: (row: T) => string | number | Date | null | undefined
-  /** Custom cell. Defaults to the accessor value. */
-  cell?: (row: T) => React.ReactNode
+  /** Custom cell. Defaults to the accessor value. `depth` is 1 for rows shown nested under a parent (tree mode). */
+  cell?: (row: T, meta: { depth: number }) => React.ReactNode
   sortable?: boolean
   align?: "left" | "right"
   mono?: boolean
@@ -41,6 +41,15 @@ export interface DataTableProps<T> {
   initialSort?: { key: string; dir: "asc" | "desc" }
   /** Phone layout: render each row as a card instead of a table row (below sm). */
   renderCard?: (row: T) => React.ReactNode
+  /**
+   * Tree mode (one level): returns the id of the row's parent, or null for a
+   * top-level row. Children are listed under their parent, collapsed until the
+   * parent's toggle is opened; sorting orders parents and keeps children with
+   * them; pages count top-level rows. While searching, matching children show
+   * opened. A child whose parent is filtered out is shown on its own.
+   * The phone card layout (renderCard) has no toggle; use it without tree mode.
+   */
+  parentId?: (row: T) => string | null
   /** UI strings, for translation. */
   labels?: Partial<DataTableLabels>
   className?: string
@@ -54,8 +63,15 @@ export interface DataTableLabels {
   selectRow: string
   table: string
   selected: string
+  /** Tree toggle; receives the number of child rows. */
+  expand: (count: number) => string
+  collapse: (count: number) => string
 }
-const DEFAULT_LABELS: DataTableLabels = { of: "of", rows: "rows", selectPage: "Select page", selectRow: "Select row", table: "Data table", selected: "selected" }
+const DEFAULT_LABELS: DataTableLabels = {
+  of: "of", rows: "rows", selectPage: "Select page", selectRow: "Select row", table: "Data table", selected: "selected",
+  expand: (n) => `Expand ${n} ${n === 1 ? "child row" : "child rows"}`,
+  collapse: (n) => `Collapse ${n} ${n === 1 ? "child row" : "child rows"}`,
+}
 
 type Sort = { key: string; dir: "asc" | "desc" } | null
 
@@ -68,13 +84,15 @@ const HIDE_BELOW = { md: "max-md:hidden", lg: "max-lg:hidden", xl: "max-xl:hidde
  */
 export function DataTable<T>({
   data, columns, rowId = (_, i) => String(i), searchable = true, searchPlaceholder = "Search", pageSize = 10,
-  selectable, onSelectionChange, onRowClick, toolbar, empty = "No results.", initialSort, renderCard, labels: labelsProp, className, ...aria
+  selectable, onSelectionChange, onRowClick, toolbar, empty = "No results.", initialSort, renderCard, parentId, labels: labelsProp, className, ...aria
 }: DataTableProps<T>) {
   const L = { ...DEFAULT_LABELS, ...labelsProp }
   const [q, setQ] = React.useState("")
   const [sort, setSort] = React.useState<Sort>(initialSort ?? null)
   const [page, setPage] = React.useState(1)
   const [selected, setSelected] = React.useState<Set<string>>(new Set())
+  /** Tree mode: parents whose children are shown (collapsed by default). */
+  const [expanded, setExpanded] = React.useState<Set<string>>(new Set())
 
   const get = React.useCallback((row: T, c: DataTableColumn<T>) => (c.accessor ? c.accessor(row) : (row as Record<string, unknown>)[c.key] as string | number | null | undefined), [])
 
@@ -106,9 +124,34 @@ export function DataTable<T>({
     return out
   }, [data, columns, q, sort, searchable, rowId, get])
 
-  const pages = pageSize ? Math.max(1, Math.ceil(rows.length / pageSize)) : 1
+  // Tree mode: top-level rows (or children whose parent is filtered out) and children per parent, both in sort order
+  const tree = React.useMemo(() => {
+    if (!parentId) return null
+    const ids = new Set(rows.map((r) => r.id))
+    const roots: typeof rows = []
+    const children = new Map<string, typeof rows>()
+    for (const r of rows) {
+      const pid = parentId(r.row)
+      if (pid && ids.has(pid)) children.set(pid, [...(children.get(pid) ?? []), r])
+      else roots.push(r)
+    }
+    return { roots, children }
+  }, [rows, parentId])
+  const searching = q.trim() !== ""
+  const isOpen = (id: string) => searching || expanded.has(id)
+  const toggleOpen = (id: string) => setExpanded((s) => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n })
+
+  const top = tree ? tree.roots : rows
+  const pages = pageSize ? Math.max(1, Math.ceil(top.length / pageSize)) : 1
   const p = Math.min(page, pages)
-  const visible = pageSize ? rows.slice((p - 1) * pageSize, p * pageSize) : rows
+  const pageTop = pageSize ? top.slice((p - 1) * pageSize, p * pageSize) : top
+  type Shown = (typeof rows)[number] & { depth: number; kids: number }
+  const visible: Shown[] = tree
+    ? pageTop.flatMap((r) => {
+        const kids = tree.children.get(r.id) ?? []
+        return [{ ...r, depth: 0, kids: kids.length }, ...(kids.length && isOpen(r.id) ? kids.map((k) => ({ ...k, depth: 1, kids: 0 })) : [])]
+      })
+    : pageTop.map((r) => ({ ...r, depth: 0, kids: 0 }))
 
   // Selection only ever covers rows that are still in the (filtered) result,
   // so bulk actions never touch rows the user can no longer see.
@@ -153,14 +196,15 @@ export function DataTable<T>({
       {renderCard && (
         <ul aria-label={aria["aria-label"] ?? L.table} className="flex flex-col gap-2 sm:hidden">
           {visible.length === 0 && <li className="rounded-xl bg-bg px-3 py-10 text-center text-muted">{empty}</li>}
-          {visible.map(({ row, id }) => {
+          {visible.map(({ row, id, depth }) => {
             const on = isOn(id)
             return (
               <li
+                data-depth={tree ? depth : undefined}
                 key={id}
                 data-selected={on || undefined}
                 onClick={onRowClick ? () => onRowClick(row) : undefined}
-                className={cn("flex items-start gap-3 rounded-xl p-3 transition-colors duration-300", on ? "bg-raise" : "bg-bg", onRowClick && "cursor-pointer active:bg-raise")}
+                className={cn("flex items-start gap-3 rounded-xl p-3 transition-colors duration-300", on ? "bg-raise" : "bg-bg", onRowClick && "cursor-pointer active:bg-raise", depth > 0 && "ml-6")}
               >
                 {selectable && (
                   <span className="pt-0.5" onClick={(e) => e.stopPropagation()}>
@@ -209,11 +253,12 @@ export function DataTable<T>({
             {visible.length === 0 && (
               <tr><td colSpan={columns.length + (selectable ? 1 : 0)} className="rounded-xl bg-bg px-3 py-10 text-center text-muted">{empty}</td></tr>
             )}
-            {visible.map(({ row, id }) => {
+            {visible.map(({ row, id, depth, kids }) => {
               const on = isOn(id)
               return (
                 <tr
                   key={id}
+                  data-depth={tree ? depth : undefined}
                   aria-selected={selectable ? on : undefined}
                   onClick={onRowClick ? () => onRowClick(row) : undefined}
                   className={cn("group", onRowClick && "cursor-pointer")}
@@ -239,7 +284,31 @@ export function DataTable<T>({
                         c.className,
                       )}
                     >
-                      {c.cell ? c.cell(row) : String(get(row, c) ?? "")}
+                      {tree && ci === 0 ? (
+                        <div className={cn("flex min-w-0 items-start gap-2", depth > 0 && "pl-3 sm:pl-7")}>
+                          {depth > 0 ? (
+                            <span aria-hidden="true" className="mt-1 h-3 w-3 shrink-0 rounded-bl-[5px] border-b-2 border-l-2 border-dot-off" />
+                          ) : kids > 0 ? (
+                            <button
+                              type="button"
+                              aria-expanded={isOpen(id)}
+                              aria-label={isOpen(id) ? L.collapse(kids) : L.expand(kids)}
+                              disabled={searching}
+                              onClick={(e) => { e.stopPropagation(); toggleOpen(id) }}
+                              className={cn(
+                                "-my-0.5 grid size-6 shrink-0 cursor-pointer place-items-center rounded-lg transition-[box-shadow,background-color,color] duration-200 disabled:cursor-default",
+                                isOpen(id) ? "bg-surface text-glow-ink shadow-raised-sm" : "bg-bg text-muted shadow-inset-sm hover:text-ink",
+                              )}
+                            >
+                              <svg viewBox="0 0 12 12" className={cn("size-3 transition-transform duration-300 ease-spring", isOpen(id) ? "rotate-90" : "rotate-0")} fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 2.5 8 6 4.5 9.5" /></svg>
+                            </button>
+                          ) : (
+                            // keeps names aligned with their siblings' toggles; dropped on phones to save width
+                            <span aria-hidden="true" className="size-6 shrink-0 max-sm:hidden" />
+                          )}
+                          <div className="min-w-0 flex-1">{c.cell ? c.cell(row, { depth }) : String(get(row, c) ?? "")}</div>
+                        </div>
+                      ) : c.cell ? c.cell(row, { depth }) : String(get(row, c) ?? "")}
                     </td>
                   ))}
                 </tr>
@@ -251,7 +320,7 @@ export function DataTable<T>({
       {pageSize > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <span className="font-mono text-xs text-muted">
-            {rows.length ? `${(p - 1) * pageSize + 1}–${Math.min(p * pageSize, rows.length)} ${L.of} ${rows.length}` : `0 ${L.rows}`}
+            {top.length ? `${(p - 1) * pageSize + 1}–${Math.min(p * pageSize, top.length)} ${L.of} ${top.length}` : `0 ${L.rows}`}
           </span>
           {pages > 1 && <Pagination page={p} pageCount={pages} onPageChange={setPage} siblings={0} />}
         </div>
